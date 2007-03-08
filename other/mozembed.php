@@ -1,4 +1,19 @@
 <?php
+    
+    define( 'BASEURI', 'http://google.de/' );
+
+    function open_uri( $moz, $uri ) 
+    {
+        if ( $uri == BASEURI ) 
+        {
+            return false;
+        } 
+        else
+        {
+            shell_exec( 'firefox "' . $uri .'" &' );
+            return true;
+        }
+    }
 
     $window = new GtkWindow();
 
@@ -25,8 +40,9 @@
 
     // Add mozembed
     $moz = new GtkMozEmbed();
+    $moz->connect( 'open-uri', 'open_uri' );
     $window->add( $moz );
-    $moz->load_url( 'http://google.de' );
+    $moz->load_url( BASEURI );
 
     // Show the window
     $window->show_all();
