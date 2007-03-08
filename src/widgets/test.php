@@ -2,6 +2,11 @@
 
 class jdWidgetTest extends jdWidget 
 {
+    protected function getSize() 
+    {
+        return array( 200, 200 );
+    }
+
     public function OnExpose( $gc, $window ) 
     {
         $cmap = $window->get_colormap();

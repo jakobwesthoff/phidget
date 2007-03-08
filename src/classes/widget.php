@@ -9,11 +9,14 @@ abstract class jdWidget extends GtkWindow
     protected $height;
     protected $bgFilename;
     protected $bgPixbuf;
+    protected $configuration;
 
-    public function __construct() 
+    public function __construct( $configuration ) 
     {
         // Call the parent constructor
         parent::__construct();
+
+        $this->configuration = $configuration;
 
         // Connect destroy event
         $this->connect_simple( 'destroy', array( 'gtk', 'main_quit' ) );
@@ -28,16 +31,17 @@ abstract class jdWidget extends GtkWindow
         // Display it on every virtual desktop
         $this->stick();
 
-        // Set its size and center it on screen
-        $this->resize( 200,200 );
-        $this->set_position( Gtk::WIN_POS_CENTER );
-
         // The window should be always below all others
         $this->set_keep_below( true );
         $this->set_type_hint( Gdk::WINDOW_TYPE_HINT_DOCK );
 
         // We want to handle the draw event ourselfs
         $this->set_app_paintable( true );
+
+        // Set its size and position on the screen
+        $size = $this->getSize();
+        $this->move( (int) $this->configuration['x'], (int) $this->configuration['y'] );
+        $this->resize( $size[0], $size[1] );
 
         // Register the event fired on movement and resizing
         $this->connect( 'configure-event', array( $this, 'configure_event' ) );
@@ -83,6 +87,9 @@ abstract class jdWidget extends GtkWindow
     }
 
     public abstract function OnExpose( $gc, $window );
+
+    protected abstract function getSize();
+
 }
 
 ?>
