@@ -22,7 +22,6 @@
 
     // The window should be always below all others
     $window->set_keep_below( true );
-    $window->set_type_hint( Gdk::WINDOW_TYPE_HINT_DOCK );
 
     // Add mozembed
     $moz = new GtkMozEmbed();
@@ -31,5 +30,7 @@
 
     // Show the window
     $window->show_all();
+
+    Gtk::Main();
 
 ?>
