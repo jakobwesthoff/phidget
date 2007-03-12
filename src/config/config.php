@@ -3,6 +3,7 @@
 define( "BASEDIR", dirname( __FILE__ ) . '/..' );
 
 ini_set( 
+    ini_get( "include_path" ) . PATH_SEPARATOR .
     "include_path", 
     BASEDIR
 );

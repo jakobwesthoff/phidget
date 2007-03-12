@@ -1,3 +1,4 @@
 <widgets>
-	<widget type="test" x="500" y="500" />
+  <widget type="test" x="400" y="500" />
+  <widget type="starterbar" x="600" y="500" />
 </widgets>
