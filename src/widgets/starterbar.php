@@ -1,16 +1,35 @@
 <?php
-
-
+/**
+ *
+ * @author Manuel Pichler <pichler@i-world.de>
+ * @version 0.1
+ */
 class jdWidgetStarterbar extends jdWidget
 {
 
+    /**
+     * Temporary all icons for the starterbar. This should be 
+     * configurable.
+     *
+     * @type array<string>
+     * @var array $_icons
+     */
     private $_icons = array(
         "pixmaps/terminal.png", 
         "pixmaps/web-browser.png", 
         "pixmaps/help.png" );
 
+    /**
+     * <tt> Array</tt> with all starterbar items.
+     *
+     * @type array<jdStarterbarItem>
+     * @var array $_items
+     */
     private $_items = array();
 
+    /**
+     *
+     */
     private $_width = 0;
 
     public function __construct( $configuration ) {
@@ -51,14 +70,37 @@ class jdWidgetStarterbar extends jdWidget
         print "CLICK ME\n";
     }
 
+    private $_random = 0;
+
+    private $_eventX = 0;
+    private $_eventY = 0;
+
     public function OnMouseMove(jdWidget $source, GdkEvent $event) {
         $scale = 0.0;
         $index = 0;
+
+        if ( $event->x === $this->_eventX && $event->y === $this->_eventY ) {
+            return;
+        }
+        $this->_eventX = $event->x;
+        $this->_eventY = $event->y;
+
+//        if ( $this->_random++ % 30 !== 0 ) { return; }
         
-        foreach ( $this->_items as $item ) {
-            if ( $item->isInOuterRange( $event ) && $item->scaleForEvent( $event ) > 0.1 ) {
+        $index = -1;
+        $scale = 0.0;
+
+        foreach ( $this->_items as $i => $item ) {
+            if ( ( $s = $item->scaleForEvent( $event ) ) > 0.2 ) {
                 // Ask for redraw
-                $source->queue_draw();
+                $source->window->invalidate_rect(
+		    new GdkRectangle(
+                        $item->OffsetX, 0, $item->Width, $item->Height), false );
+
+                $scale = $s;
+                $index = $i;
+
+                break;
             }
         }
     }
@@ -83,8 +125,9 @@ class jdStarterbarItem {
     private $_scale = 0.0;
 
     private $_properties = array(
-        "Width"  => "_width",
-        "Height" => "_height");
+        "OffsetX" => "_offsetX",
+        "Width"   => "_width",
+        "Height"  => "_height");
 
     public function __construct( $icon, $offsetX = 0, $size = 64) {
         $this->_icon = GdkPixbuf::new_from_file( $icon );
@@ -125,6 +168,9 @@ class jdStarterbarItem {
 
 	$sqrt = sqrt( pow( $this->_centerX - $event->x, 2) + pow( $this->_centerY - $event->y, 2 ) );
 
+        $d1 = ( $this->_centerX - $event->x );
+        $d2 = ( $this->_centerY - $event->y );
+
         if ( $sqrt > $this->_size ) {
             return 0.0;
         }
@@ -139,18 +185,18 @@ class jdStarterbarItem {
             if ( ( $diff = ( $event->y - $this->_centerY ) ) > ( $this->_size / 3 ) ) {
                 $scale *= 2 / $diff;
             }
-
             // Check for minimum change
             if ( abs( $this->_scale - $scale ) <= 0.2 ) {
                 return 0.0;
             }
         }
-
         // Keep current scale info
         $this->_scale = $scale;
 
         return $scale;
     }
+
+    private $_cache = array();
 
     public function OnExpose( $gc, $window ) {
         $size = ceil( $this->_scale + $this->_size );
@@ -158,10 +204,12 @@ class jdStarterbarItem {
         $x = $this->_offsetX + ( ( $this->_width - $size ) / 2 );
         $y = $this->_height - $size;
 
-        $pixbuf = $this->_icon->scale_simple( $size, $size, Gdk::INTERP_NEAREST );
-        
+        $pixbuf = $this->_icon->scale_simple( $size, $size, Gdk::INTERP_HYPER );        
+      
 	$window->draw_pixbuf( $gc, $pixbuf, 0, 0, $x, $y );
         $window->draw_arc( $gc, false, $this->_offsetX, $this->_centerY - $this->_size, $this->_width, $this->_width, 0, 360 * 64 );
+
+        unset( $pixbuf );
     }
 
 }
