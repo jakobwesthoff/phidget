@@ -1,4 +1,17 @@
 <widgets>
-  <widget type="example" x="400" y="500" />
-  <widget type="starterbar" x="600" y="500" />
+
+    <widget type="example" x="400" y="500" />
+    
+    <widget type="finder" x="600" y="500">
+        <size>64</size>
+        <zoom>128</zoom>
+        <space>16</space>
+		<zoomoffset>32</zoomoffset>
+        <icons>
+            <icon>pixmaps/terminal.png</icon>
+            <icon>pixmaps/web-browser.png</icon>
+            <icon>pixmaps/help.png</icon>
+        </icons>
+    </widget>
+
 </widgets>

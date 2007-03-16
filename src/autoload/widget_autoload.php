@@ -7,6 +7,9 @@ return array(
 
     'jdWidgetStarterbar'            =>  'widgets/starterbar/starterbar.php',
     'jdWidgetStarterbarIcon'        =>  'widgets/starterbar/icon.php',
+
+    'jdWidgetFinder'                =>  'widgets/finder/finder.php',
+    'jdWidgetFinderIcon'            =>  'widgets/finder/icon.php',
 );
 
 ?>
