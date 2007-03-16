@@ -149,7 +149,7 @@ class jdWidgetFinder extends jdWidget
         }
         //@todo: something is definetly wrong with the scaling factor calculation
         //       I will fix this tommorow I am just to tired now
-        $scalefactor = ( 1.0 + ( (float) $this->configuration->size / ( (float) $multiplier * ( ( (float) $this->configuration->zoom - (float) $this->configuration->size ) / (float) $this->configuration->zoomoffset ) ) ) );
+        $scalefactor = ( 1.0 + ( ( (float) $multiplier * ( ( (float) $this->configuration->zoom - (float) $this->configuration->size ) / (float) $this->configuration->zoomoffset ) ) / (float) $this->configuration->size ) );
         return $scalefactor;
     }
 }

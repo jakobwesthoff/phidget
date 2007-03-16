@@ -6,7 +6,7 @@
         <size>64</size>
         <zoom>128</zoom>
         <space>16</space>
-		<zoomoffset>32</zoomoffset>
+		<zoomoffset>128</zoomoffset>
         <icons>
             <icon>pixmaps/terminal.png</icon>
             <icon>pixmaps/web-browser.png</icon>

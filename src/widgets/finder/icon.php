@@ -19,7 +19,7 @@ class jdWidgetFinderIcon {
         $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );                
         // @todo: there is something completely wrong with this center to draw point calculation
         //        But I am too tired to fix this now :)
-	    $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y + round( $this->size / 2.0 ) );
+	    $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ) );
         unset( $pixbuf );
     }
 
