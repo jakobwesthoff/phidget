@@ -2,7 +2,8 @@
 
 return array( 
     'jdWidget'           =>  'classes/widget.php',    
-    'jdWidgetTest'       =>  'widgets/test.php',
+
+    'jdWidgetExample'    =>  'widgets/example/example.php',
     "jdWidgetStarterbar" =>  "widgets/starterbar.php"
 );
 
