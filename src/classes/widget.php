@@ -33,7 +33,7 @@ abstract class jdWidget extends GtkWindow
 
         // The window should be always below all others
         $this->set_keep_below( true );
-        $this->set_type_hint( Gdk::WINDOW_TYPE_HINT_DOCK );
+//        $this->set_type_hint( Gdk::WINDOW_TYPE_HINT_DOCK );
 
         // We want to handle the draw event ourselfs
         $this->set_app_paintable( true );
@@ -81,7 +81,7 @@ abstract class jdWidget extends GtkWindow
         $gc = new GdkGC( $gdkwindow );
         
         // Draw the pseudo transparency background
-        $gdkwindow->draw_pixbuf( $gc, $this->bgPixbuf, $this->x, $this->y, 0, 0, $this->width, $this->height );
+        $gdkwindow->draw_pixbuf( $gc, $this->bgPixbuf, $this->x + $event->area->x, $this->y + $event->area->y, $event->area->x, $event->area->y, $event->area->width, $event->area->height );
 
         return $this->OnExpose( $gc, $gdkwindow );
     }
