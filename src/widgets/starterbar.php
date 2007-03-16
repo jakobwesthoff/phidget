@@ -41,6 +41,12 @@ class jdWidgetStarterbar extends jdWidget
             
             $offsetX += 80;
         } 
+
+        $this->add_events( Gdk::BUTTON_PRESS_MASK |
+                           Gdk::POINTER_MOTION_MASK );
+        $this->connect( "button-press-event", array( $this, "OnMousePress" ) );
+        $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
+
     }
 
     protected function getSize()
@@ -55,11 +61,6 @@ class jdWidgetStarterbar extends jdWidget
 
         $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
         $window->draw_rectangle( $gc, false, 0, 0, $size[0] - 1, 149 );
-
-        $this->add_events( Gdk::BUTTON_PRESS_MASK |
-                           Gdk::POINTER_MOTION_MASK );
-        $this->connect( "button-press-event", array( $this, "OnMousePress" ) );
-        $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
 
         foreach ( $this->_items as $item ) {
             $item->OnExpose( $gc, $window );
