@@ -26,7 +26,7 @@ abstract class jdWidget extends GtkWindow
         $this->connect_simple( 'destroy', array( 'gtk', 'main_quit' ) );
 
         // Remove the window borders
- //       $this->set_decorated( false );
+        $this->set_decorated( false );
 
         // Hide the window from the taskbar an the pager
         $this->set_skip_pager_hint( true );
