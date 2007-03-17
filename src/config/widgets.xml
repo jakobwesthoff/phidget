@@ -1,17 +1,42 @@
 <widgets>
-
-    <widget type="example" x="400" y="500" />
-    
-    <widget type="finder" x="600" y="500">
-        <size>64</size>
-        <zoom>128</zoom>
-        <space>16</space>
-		<zoomoffset>128</zoomoffset>
-        <icons>
+<!--
+    <widget type="example" x="200" y="500" />
+    -->
+    <widget type="finder" x="300" y="500">
+        <background>pixmaps/bg.png</background>
+        <size>72</size>
+        <zoom>160</zoom>
+        <space>8</space>
+		<zoomoffset>160</zoomoffset>
+        <items>
+          <item>
+            <icon>pixmaps/nautilus.png</icon>
+            <command>nautilus</command>
+          </item>
+          <item>
             <icon>pixmaps/terminal.png</icon>
+            <command>gnome-terminal</command>
+          </item>
+          <item>
             <icon>pixmaps/web-browser.png</icon>
+            <command>firefox</command>
+          </item>
+          <item>
+            <type>separator</type>
+          </item>
+          <item>
+            <type>clock</type>
+            <background>pixmaps/osXclock.png</background>
+          </item>
+          <item>
             <icon>pixmaps/help.png</icon>
-        </icons>
+            <command>yelp</command>
+          </item>
+          <item>
+            <icon>pixmaps/gedit.png</icon>
+            <command>gedit</command>
+          </item>
+        </items>
     </widget>
 
 </widgets>
