@@ -85,6 +85,8 @@ class jdWidgetFinder extends jdWidget
 
     public function OnMousePress( jdWidget $source, GdkEvent $event ) 
     {
+        //@todo: Determine which icon has been clicked. This should be easy by retrieving
+        //       the biggest icon.
         echo "clicked!\n";
     }
 
