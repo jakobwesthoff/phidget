@@ -18,34 +18,13 @@ class jdWidgetFinder extends jdWidget
     protected $lastMouseX;
     protected $lastMouseY;
 
-    public function __construct( SimpleXMLElement $configuration )
+    protected function init()
     {
-        parent::__construct( $configuration );
-        
         // Initialize class members
         $this->items = array();        
         $this->lastMouseX = 0;
         $this->lastMouseY = 0;
 
-        //Calculate needed size
-        $realwidth = 0;
-	    foreach ( $this->items as $item )
-	    {
-	        $realwidth += $item->size;
-	    }
-        
-        //@todo: this is not always correct. Calculate the maximum needed size here.
-        
-        /* Needed width is calculated as follows:
-         * sum( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
-         * Needed height is calculated as follows:
-         * At the moment this is just the maximum icon size
-         */
-        $this->size = array(
-            $realwidth + ( count( $this->items ) - 1 ) * (int) $this->configuration->space + (int) $this->configuration->zoom,
-            (int) $this->configuration->zoom
-        );
-        
         // Make local properties
         $iconZoom  = (int) $this->configuration->zoom;
         $iconSize  = (int) $this->configuration->size;
@@ -77,6 +56,25 @@ class jdWidgetFinder extends jdWidget
             $this->items[] = $item;
         } 
 
+        //Calculate needed size
+        $realwidth = 0;
+	    foreach ( $this->items as $item )
+	    {
+	        $realwidth += $item->size;
+	    }
+        
+        //@todo: this is not always correct. Calculate the maximum needed size here.
+        
+        /* Needed width is calculated as follows:
+         * sum( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
+         * Needed height is calculated as follows:
+         * At the moment this is just the maximum icon size
+         */
+        $this->size = array(
+            $realwidth + ( count( $this->items ) - 1 ) * (int) $this->configuration->space + (int) $this->configuration->zoom,
+            (int) $this->configuration->zoom
+        );
+        
         // Connect to the needed signals
         $this->add_events( 
             Gdk::BUTTON_PRESS_MASK

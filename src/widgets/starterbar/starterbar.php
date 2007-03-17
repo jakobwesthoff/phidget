@@ -32,9 +32,8 @@ class jdWidgetStarterbar extends jdWidget
      */
     private $_width = 0;
 
-    public function __construct( $configuration ) {
-        parent::__construct( $configuration );
-
+    protected function init() 
+    {
         $offsetX = 0;
         foreach ( $this->_icons as $icon ) {
             $this->_items[] = new jdWidgetStarterbarIcon( $icon, $offsetX, 64 );
@@ -46,7 +45,6 @@ class jdWidgetStarterbar extends jdWidget
                            Gdk::POINTER_MOTION_MASK );
         $this->connect( "button-press-event", array( $this, "OnMousePress" ) );
         $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
-
     }
 
     protected function getSize()

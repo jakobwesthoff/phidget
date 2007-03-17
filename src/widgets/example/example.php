@@ -2,6 +2,11 @@
 
 class jdWidgetExample extends jdWidget 
 {
+    protected function init() 
+    {
+        // Nothing to do here
+    }
+
     protected function getSize() 
     {
         return array( 200, 200 );

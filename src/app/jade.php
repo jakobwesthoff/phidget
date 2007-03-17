@@ -10,7 +10,6 @@ foreach( $xml->widget as $widgetConfig )
 {
     $class = 'jdWidget' . ucfirst( (string) $widgetConfig['type'] );
     $widget = new $class( $widgetConfig );
-    $widget->initWidget();
     echo "Added $class\n";
 }
 

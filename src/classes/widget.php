@@ -18,10 +18,12 @@ abstract class jdWidget extends GtkWindow
 
         $this->configuration = $configuration;
 
-    }
+        // Initialize the widget
+        $this->init();
 
-    public function initWidget() 
-    {
+        // Do all the necessary gtk stuff to display the widget on 
+        // the desktop
+
         // Connect destroy event
         $this->connect_simple( 'destroy', array( 'gtk', 'main_quit' ) );
 
@@ -92,6 +94,8 @@ abstract class jdWidget extends GtkWindow
     public abstract function OnExpose( $gc, $window );
 
     protected abstract function getSize();
+
+    protected abstract function init();
 
 }
 
