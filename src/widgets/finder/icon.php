@@ -4,21 +4,19 @@ class jdWidgetFinderIcon {
 
     protected $properties;
 
-    public function __construct( $filename, $size, $x, $y )
+    public function __construct( $filename )
     {
         $this->properties = array( 
             'pixbuf'        =>  GdkPixbuf::new_from_file( $filename ),
-            'size'          =>  $size,
-            'x'             =>  $x,
-            'y'             =>  $y,
+            'size'          =>  0,
+            'x'             =>  0,
+            'y'             =>  0,
         );
     }
 
     public function draw( $gc, $window )
     {
         $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );                
-        // @todo: there is something completely wrong with this center to draw point calculation
-        //        But I am too tired to fix this now :)
 	    $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ) );
         unset( $pixbuf );
     }

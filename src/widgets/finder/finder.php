@@ -25,17 +25,24 @@ class jdWidgetFinder extends jdWidget
         
         // Initialize all icons
         $xoffset = round( $this->configuration->size / 2.0 );
-        foreach ( $this->configuration->icons->icon as $icon ) 
+        foreach ( $this->configuration->icons->icon as $filename ) 
         {
-            $this->icons[] = new jdWidgetFinderIcon( 
-                                (string) $icon,
-                                (int) $this->configuration->size,
-                                $xoffset,
-                                round( $this->configuration->size / 2.0 )
-                            );
-            $xoffset += (int) $this->configuration->size + (int) $this->configuration->space;
-            echo "added Icon: ", ( string ) $icon, "\n";
+            $icon = new jdWidgetFinderIcon( (string) $filename );           
+            $icon->size = (int) $this->configuration->size;
+            $this->icons[] = $icon;
+            echo "added Icon: ", ( string ) $filename, "\n";
         } 
+
+        $size = $this->getSize();
+        // Beginning xoffset left based (NOT CENTER BASED)
+        $xoffset = round( ( $size[0] - ( count( $this->icons ) * (int) $this->configuration->size + ( count( $this->icons ) - 1 ) * (int) $this->configuration->space ) ) / 2.0 );
+        // Correct the x,y positions of the icons
+        foreach( $this->icons as $icon ) 
+        {
+            $icon->x = $xoffset + round( $icon->size / 2.0 );
+            $icon->y = $size[1] - round( $icon->size / 2.0 );
+            $xoffset += $icon->size + (int) $this->configuration->space;
+        }
 
         // Connect to the needed signals
         $this->add_events( 
@@ -95,12 +102,9 @@ class jdWidgetFinder extends jdWidget
 
         $size = $this->getSize();
 
-        $mouseOffset = round( ( $size[0] - ( count( $this->icons ) * (int) $this->configuration->size + ( count( $this->icons ) - 1 ) * (int) $this->configuration->size ) ) / 2.0 );
-        $mouseX = $event->x - $mouseOffset;
+        $xoffset = round( ( $size[0] - ( count( $this->icons ) * (int) $this->configuration->size + ( count( $this->icons ) - 1 ) * (int) $this->configuration->space ) ) / 2.0 ) + round( $this->configuration->size / 2.0 );
+        $mouseX = $event->x;
         
-        // Calculate the center of the first icon
-        $xoffset = round( $this->configuration->size / 2.0 );
-
         $realwidth = 0;
         // Scale all icons
         // xoffset is center based
@@ -109,7 +113,7 @@ class jdWidgetFinder extends jdWidget
             $scalefactor = $this->calculateScaling( $xoffset, $mouseX );
             // Calculate the new size and y position
             $icon->size = (int) $this->configuration->size * $scalefactor;
-            $icon->y = round( $icon->size / 2.0 );
+            $icon->y = $size[1] - round( $icon->size / 2.0 );
 
             $xoffset += (int) $this->configuration->size + (int) $this->configuration->space;
             $realwidth += $icon->size + (int) $this->configuration->space;            
@@ -128,7 +132,6 @@ class jdWidgetFinder extends jdWidget
 
         // @todo: check if redraw is really neccessary
         // Redraw the widget
-        $size = $this->getSize();
         $source->window->invalidate_rect(
             new GdkRectangle(
                 0,
@@ -147,8 +150,6 @@ class jdWidgetFinder extends jdWidget
         {
             return 1.0;
         }
-        //@todo: something is definetly wrong with the scaling factor calculation
-        //       I will fix this tommorow I am just to tired now
         $scalefactor = ( 1.0 + ( ( (float) $multiplier * ( ( (float) $this->configuration->zoom - (float) $this->configuration->size ) / (float) $this->configuration->zoomoffset ) ) / (float) $this->configuration->size ) );
         return $scalefactor;
     }
