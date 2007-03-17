@@ -4,10 +4,10 @@
     -->
     <widget type="finder" x="300" y="500">
         <background>pixmaps/bg.png</background>
-        <size>72</size>
-        <zoom>160</zoom>
-        <space>8</space>
-		<zoomoffset>160</zoomoffset>
+        <size>64</size>
+        <zoom>128</zoom>
+        <space>16</space>
+		<zoomoffset>140</zoomoffset>
         <items> 
           <item>
             <icon>pixmaps/nautilus.png</icon>

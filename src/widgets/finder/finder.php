@@ -3,15 +3,17 @@
  * jdWidgetFinder 
  * 
  * @version //autogen//
- * @copyright Copyright (C) 2007 Jakob Westhoff. All rights reserved.
+ * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
+ *            All rights reserved.
  * @author Jakob Westhoff <jakob@php.net> 
+ * @author Manuel Pichler <mp@manuel-pichler.de>
  * @license GPL
  */
 class jdWidgetFinder extends jdWidget
 {
     protected $background;
-    protected $icons;
-    protected $size = null;
+    protected $items;
+    protected $size;
 
     protected $lastMouseX;
     protected $lastMouseY;
@@ -20,19 +22,38 @@ class jdWidgetFinder extends jdWidget
     {
         parent::__construct( $configuration );
         
-        // Initialize all class members
-        $this->icons = array();
+        // Initialize class members
+        $this->items = array();        
         $this->lastMouseX = 0;
         $this->lastMouseY = 0;
+
+        //Calculate needed size
+        $realwidth = 0;
+	    foreach ( $this->items as $item )
+	    {
+	        $realwidth += $item->size;
+	    }
+        
+        //@todo: this is not always correct. Calculate the maximum needed size here.
+        
+        /* Needed width is calculated as follows:
+         * sum( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
+         * Needed height is calculated as follows:
+         * At the moment this is just the maximum icon size
+         */
+        $this->size = array(
+            $realwidth + ( count( $this->items ) - 1 ) * (int) $this->configuration->space + (int) $this->configuration->zoom,
+            (int) $this->configuration->zoom
+        );
         
         // Make local properties
-        $icozoom  = (int) $this->configuration->zoom;
-        $icosize  = (int) $this->configuration->size;
-        $icospace = (int) $this->configuration->space;
+        $iconZoom  = (int) $this->configuration->zoom;
+        $iconSize  = (int) $this->configuration->size;
+        $iconSpace = (int) $this->configuration->space;
                 
         // Calculate x and y offsets
-        $xoffset = $icosize + ( $icospace * ( ( $icozoom - $icosize ) / ( $icospace * 2 ) ) );
-        $yoffset = $icozoom - round( $icosize / 2.0 );
+        $xoffset = $iconSize + ( $iconSpace * ( ( $iconZoom - $iconSize ) / ( $iconSpace * 2 ) ) );
+        $yoffset = $iconZoom - round( $iconSize / 2.0 );
 
         foreach ( $this->configuration->items->item as $itemconfig ) 
         {
@@ -44,16 +65,16 @@ class jdWidgetFinder extends jdWidget
 	                                        $yoffset );
 	                                        
             // Check for none standard item width
-	        if ( $item->size !== $icosize ) 
+	        if ( $item->size !== $iconSize ) 
 	        {
 	            // Reset item x offset
-	            $item->x = $item->x + ( ( $item->size - $icosize ) / 2 );
+	            $item->x = $item->x + ( ( $item->size - $iconSize ) / 2 );
 	        }
 
             // Calculate next x offset
-            $xoffset += $item->size + $icospace;
+            $xoffset += $item->size + $iconSpace;
             
-            $this->icons[] = $item;
+            $this->items[] = $item;
         } 
 
         // Connect to the needed signals
@@ -72,34 +93,13 @@ class jdWidgetFinder extends jdWidget
                                     (string) $this->configuration->background,
                                     $size[0], 
                                     $size[1],
-                                    $icosize
+                                    $iconSize
                                 );
     }
 
     protected function getSize()
     {
-        // Check for previous size calculation
-        if ( $this->size !== null )
-        {
-            return $this->size;
-        }
-        
-        // Sum width of all items 
-        $itemwidth = 0;
-	    foreach ( $this->icons as $item )
-	    {
-	        $itemwidth += $item->size;
-	    }
-        
-        /* Needed width is calculated as follows:
-         * sum( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
-         * Needed height is calculated as follows:
-         * At the moment this is just the maximum icon size
-         */
-        $this->size = array(
-            $itemwidth + ( count( $this->icons ) - 1 ) * (int) $this->configuration->space + (int) $this->configuration->zoom,
-            (int) $this->configuration->zoom
-        );
+        return $this->size;
         
         return $this->size;
     }
@@ -116,10 +116,10 @@ class jdWidgetFinder extends jdWidget
         $this->background->draw( $gc, $window );
         
         // Draw every icon to the widget surface
-        foreach( $this->icons as $icon ) 
+        foreach( $this->items as $item ) 
         {
             // Draw the icon
-            $icon->draw( $gc, $window );
+            $item->draw( $gc, $window );
         }
     }
 
@@ -131,13 +131,13 @@ class jdWidgetFinder extends jdWidget
         $clickedIcon = null;
 
         // Find the matching icon
-        foreach ( $this->icons as $icon ) 
+        foreach ( $this->items as $item ) 
         {
-            $tmp = abs( $event->x - $icon->x );
+            $tmp = abs( $event->x - $item->x );
             if ( $tmp < $diff ) 
             {
                 $diff = $tmp;
-                $clickedIcon = $icon;
+                $clickedIcon = $item;
             }
         }
         
@@ -176,14 +176,14 @@ class jdWidgetFinder extends jdWidget
         $realwidth = 0;
         // Scale all icons
         // xoffset is center base
-        foreach ( $this->icons as $icon )
+        foreach ( $this->items as $item )
         {
             $scalefactor = $this->calculateScaling( $xoffset, $event->x, $event->y ); // Calculate the new size and y position
-            $icon->size = (int) $this->configuration->size * $scalefactor;
-            $icon->y    = (int) $this->configuration->zoom - round( $icon->size / 2.0 ) - ( 1.5 * $scalefactor );
+            $item->size = (int) $this->configuration->size * $scalefactor;
+            $item->y    = (int) $this->configuration->zoom - round( $item->size / 2.0 ) - ( 1.5 * $scalefactor );
 
-            $xoffset   += (int) $icon->size + (int) $this->configuration->space;
-            $realwidth += $icon->size + (int) $this->configuration->space;
+            $xoffset   += (int) $item->size + (int) $this->configuration->space;
+            $realwidth += $item->size + (int) $this->configuration->space;
         }
         
         $realwidth -= (int) $this->configuration->space;
@@ -192,10 +192,10 @@ class jdWidgetFinder extends jdWidget
         $xoffset = round( ( $size[0] - $realwidth ) / 2.0 );
         // Correct the overlapping positions and center the bar correctly
         // xoffset is left border based
-        foreach ( $this->icons as $icon ) 
+        foreach ( $this->items as $item ) 
         {
-            $icon->x = $xoffset + round( $icon->size / 2.0 );
-            $xoffset += $icon->size + (int) $this->configuration->space;
+            $item->x = $xoffset + round( $item->size / 2.0 );
+            $xoffset += $item->size + (int) $this->configuration->space;
         }
         // @todo: check if redraw is really neccessary
         // Redraw the widget

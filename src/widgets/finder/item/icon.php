@@ -3,13 +3,14 @@
  * jdWidgetFinderIconItem
  *
  * @version //autogen//
- * @copyright Copyright (C) 2007 Jakob Westhoff. All rights reserved.
+ * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
+ *            All rights reserved.
+ * @author Jakob Westhoff <jakob@php.net> 
  * @author Manuel Pichler <mp@manuel-pichler.de>
  * @license GPL
  */
 class jdWidgetFinderIconItem extends jdWidgetFinderItem
 {
-    
     /**
      * Constructor takes the configuration, the x/y offset and the item size as
      * argument.
@@ -30,8 +31,8 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
     public function draw( GdkGC $gc, GdkWindow $window )
     {
         $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );
-        // @todo: there is something completely wrong with this center to draw point calculation
-        //        But I am too tired to fix this now :)
+        // The icon position is defined by its center point, but gdk needs the top left corner. 
+        // Calc the new point and draw.
         $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ) );
         unset( $pixbuf );
     }
