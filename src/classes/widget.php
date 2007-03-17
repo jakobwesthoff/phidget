@@ -18,11 +18,15 @@ abstract class jdWidget extends GtkWindow
 
         $this->configuration = $configuration;
 
+    }
+
+    public function initWidget() 
+    {
         // Connect destroy event
         $this->connect_simple( 'destroy', array( 'gtk', 'main_quit' ) );
 
         // Remove the window borders
-        $this->set_decorated( false );
+ //       $this->set_decorated( false );
 
         // Hide the window from the taskbar an the pager
         $this->set_skip_pager_hint( true );
@@ -33,7 +37,6 @@ abstract class jdWidget extends GtkWindow
 
         // The window should be always below all others
         $this->set_keep_below( true );
-//        $this->set_type_hint( Gdk::WINDOW_TYPE_HINT_DOCK );
 
         // We want to handle the draw event ourselfs
         $this->set_app_paintable( true );

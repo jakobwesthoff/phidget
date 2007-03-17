@@ -6,10 +6,12 @@ $xml = simplexml_load_file( 'config/widgets.xml' );
 
 $widgets = array();
 
-foreach( $xml->widget as $widget ) 
+foreach( $xml->widget as $widgetConfig ) 
 {
-    $class = 'jdWidget' . ucfirst( (string) $widget['type'] );
-    $widgets[] = new $class( $widget );
+    $class = 'jdWidget' . ucfirst( (string) $widgetConfig['type'] );
+    $widget = new $class( $widgetConfig );
+    $widget->initWidget();
+    echo "Added $class\n";
 }
 
 Gtk::Main();
