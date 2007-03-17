@@ -55,6 +55,8 @@ class jdWidgetFinder extends jdWidget
 
     protected function getSize()
     {
+        //@todo: change size calculation function, to reflect the real size of the bar. This one is not accurate
+        //       anymore because of the zoomoffset config value
         /* Needed width is calculated as follows:
          * ( number of icons ) * ( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
          * Needed height is calculated as follows:
