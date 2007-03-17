@@ -87,12 +87,10 @@ class jdWidgetFinder extends jdWidget
         $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
         $this->connect( "leave-notify-event", array( $this, "OnMouseLeave" ) );
         
-        $size = $this->getSize();
-        
         $this->background = new jdWidgetFinderBackground( 
                                     (string) $this->configuration->background,
-                                    $size[0], 
-                                    $size[1],
+                                    $this->size[0], 
+                                    $this->size[1],
                                     $iconSize
                                 );
     }
@@ -100,18 +98,14 @@ class jdWidgetFinder extends jdWidget
     protected function getSize()
     {
         return $this->size;
-        
-        return $this->size;
     }
 
     public function OnExpose( $gc, $window )
     {
-        $size = $this->getSize();
-
         // DEBUG: Draw border around the widget
         $cmap = $window->get_colormap();
         $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
-        $window->draw_rectangle( $gc, false, 0, 0, $size[0] - 1, $size[1] - 1 );
+        $window->draw_rectangle( $gc, false, 0, 0, $this->size[0] - 1, $this->size[1] - 1 );
         
         $this->background->draw( $gc, $window );
         
@@ -168,8 +162,6 @@ class jdWidgetFinder extends jdWidget
         $this->lastMouseX = $event->x;
         $this->lastMouseY = $event->y;
 
-        $size = $this->getSize();
-        
         // Calculate the center of the first icon
         $xoffset = round( $this->configuration->zoom * 0.75 );
 
@@ -189,7 +181,7 @@ class jdWidgetFinder extends jdWidget
         $realwidth -= (int) $this->configuration->space;
 
         // Calc new xoffset based on the real width of the bar
-        $xoffset = round( ( $size[0] - $realwidth ) / 2.0 );
+        $xoffset = round( ( $this->size[0] - $realwidth ) / 2.0 );
         // Correct the overlapping positions and center the bar correctly
         // xoffset is left border based
         foreach ( $this->items as $item ) 
@@ -199,13 +191,12 @@ class jdWidgetFinder extends jdWidget
         }
         // @todo: check if redraw is really neccessary
         // Redraw the widget
-        $size = $this->getSize();
         $source->window->invalidate_rect(
             new GdkRectangle(
                 0,
                 0,
-                $size[0],
-                $size[1]
+                $this->size[0],
+                $this->size[1]
             ),
             false
         );
@@ -219,13 +210,10 @@ class jdWidgetFinder extends jdWidget
 
     protected function calculateScaling( $center, $mouseX, $mouseY ) 
     {
-        
-        $size = $this->getSize();
-        
         if ( $mouseX <= 0 
           || $mouseY <= 0
-          || $mouseX >= $size[0]
-          || $mouseY >= $size[1] ) 
+          || $mouseX >= $this->size[0]
+          || $mouseY >= $this->size[1] ) 
         {
             // No scaling here, the mouse left the widget.
             return 1.0;
