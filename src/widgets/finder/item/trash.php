@@ -78,6 +78,17 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
         // Add Gtk timeout for trash check
         Gtk::timeout_add( 2000, array( $this, "checkTrash" ) );
     }
+
+    /**
+     * This item recieved a left clicked.
+     *
+     * @param GdkWindow $window
+     */
+    public function doLeftClick( GdkWindow $window )
+    {
+        // Nothing todo:
+        // TODO: Clear on double click???
+    }
     
     public function checkTrash()
     {
@@ -91,7 +102,7 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
          }
     }
     
-    public function checkTrashFiles()
+    protected function checkTrashFiles()
     {
         
         // Get user home directory
