@@ -91,7 +91,7 @@ abstract class jdWidget extends GtkWindow
         return $this->OnExpose( $gc, $gdkwindow );
     }
 
-    public abstract function OnExpose( $gc, $window );
+    public abstract function OnExpose( GdkGC $gc, GdkWindow $window );
 
     protected abstract function getSize();
 

@@ -11,13 +11,59 @@
  */
 class jdWidgetFinder extends jdWidget
 {
+    
+    /**
+     * The finder bar background.
+     *
+     * @type jdWidgetFinderBackground
+     * @var jdWidgetFinderBackground $background
+     */
     protected $background;
+    
+    /**
+     * <tt>Array</tt> of <tt>jdWidgetFinderItem</tt> instances.
+     *
+     * @type array<jdWidgetFinderItem>
+     * @var array $items
+     */
     protected $items;
+    
+    /**
+     * <tt>Array</tt> with the calculated widget size.
+     * 
+     * <code>
+     *   array(
+     *       0  =>  (widget width),
+     *       1  =>  (widget height)
+     *   );
+     * </code>
+     * 
+     * @type array<integer>
+     * @var array $size
+     */
     protected $size;
 
+    /**
+     * Mouse x offset from the last recieved event.
+     *
+     * @type integer
+     * @var integer $lastMouseX
+     */
     protected $lastMouseX;
+    
+    /**
+     * Mouse y offset from the last recieved event.
+     *
+     * @type integer
+     * @var integer $lastMouseY
+     */
     protected $lastMouseY;
 
+    /**
+     * Main init method for a widget, this method is called from the
+     * <tt>jdWidget</tt> constructor.
+     *
+     */
     protected function init()
     {
         // Initialize class members
@@ -94,12 +140,30 @@ class jdWidgetFinder extends jdWidget
                                 );
     }
 
+    /**
+     * Returns the size of the widget implementation.
+     * 
+     * <code>
+     *   array(
+     *       0  =>  (widget width),
+     *       1  =>  (widget height)
+     *   );
+     * </code>
+     *
+     * @return array
+     */
     protected function getSize()
     {
         return $this->size;
     }
 
-    public function OnExpose( $gc, $window )
+    /**
+     * Main drawing method for a widget.
+     *
+     * @param GdkGC $gc
+     * @param GdkWindow $window
+     */
+    public function OnExpose( GdkGC $gc, GdkWindow $window )
     {
         // DEBUG: Draw border around the widget
         $cmap = $window->get_colormap();
@@ -116,6 +180,13 @@ class jdWidgetFinder extends jdWidget
         }
     }
 
+    /**
+     * Event handler for on mouse press events. This method is called for both
+     * left and right button clicks.
+     * 
+     * @param jdWidget $source
+     * @param GdkEvent $event 
+     */
     public function OnMousePress( jdWidget $source, GdkEvent $event ) 
     {   
         // Difference between event x and widget x
@@ -144,6 +215,13 @@ class jdWidgetFinder extends jdWidget
         }
     }
 
+    /**
+     * Event handler for mouse move events. It calculates the different item
+     * scalings and item positions.
+     *
+     * @param jdWidget $source
+     * @param GdkEvent $event
+     */
     public function OnMouseMove( jdWidget $source, GdkEvent $event ) 
     {
         if ( $this->lastMouseX === $event->x
@@ -196,12 +274,29 @@ class jdWidgetFinder extends jdWidget
         );
     }
     
+    /**
+     * Event handler for mouse leave events. This method delegates to the 
+     * <tt>OnMouseMove()</tt> method, it ensures zero scaling for quick mice 
+     * movers ;)
+     *
+     * @param jdWidget $source
+     * @param GdkEvent $event
+     */
     public function OnMouseLeave( jdWidget $source, GdkEvent $event ) 
     {
         // Delegate leave event to mouse move, it contains the logic.
         $this->OnMouseMove( $source, $event );
     }
 
+    /**
+     * Calculates the scaling for the given <tt>$center</tt> in connection with
+     * the given <tt>$mouseX</tt> and <tt>$mouseY</tt> value.
+     *
+     * @param integer $center Item center position
+     * @param integer $mouseX
+     * @param integer $mouseY
+     * @return float The item scaling multiplier.
+     */
     protected function calculateScaling( $center, $mouseX, $mouseY ) 
     {
         if ( $mouseX <= 0 
@@ -213,20 +308,25 @@ class jdWidgetFinder extends jdWidget
             return 1.0;
         }
         
-        $multiplierX = (int) $this->configuration->zoomoffset - abs( $center - $mouseX );
-        $multiplierY = (int) $this->configuration->zoomoffset - abs( $this->configuration->zoom - $mouseY );
+        // Local properties for shorter calculation code
+	    $zoomOffset = (float) $this->configuration->zoomoffset;
+	    $itemSize   = (float) $this->configuration->size;
+	    $itemZoom   = (float) $this->configuration->zoom;
+        
+        $multiplierX = $zoomOffset - abs( $center - $mouseX );
+        $multiplierY = $zoomOffset - abs( $itemZoom - $mouseY );
         
         // The x multiplier has a greater influence  on item scaling, so
         // use the max zoom value for weight calculation.
-        $multiplier = round( ( ( $multiplierX * (int) $this->configuration->zoom ) + $multiplierY ) / (int) $this->configuration->zoom );
+        $multiplier = ( ( $multiplierX * $itemZoom ) + $multiplierY ) / $itemZoom;
 
         if ( $multiplier < 0 ) 
         {
             return 1.0;
         }
         
-        $scalefactor = ( ( (float) $multiplier * ( ( (float) $this->configuration->zoom - (float) $this->configuration->size ) / (float) $this->configuration->zoomoffset ) ) / (float) $this->configuration->size );
-        $scalefactor = ( 1.0 + ( ( $scalefactor / $this->configuration->zoomoffset) * $multiplierY ) );
+        $scalefactor = ( ( $multiplier * ( ( $itemZoom - $itemSize ) / $zoomOffset ) ) / $itemSize );
+        $scalefactor = ( 1.0 + ( ( $scalefactor / $zoomOffset) * $multiplierY ) );
         
         return $scalefactor;
     }
