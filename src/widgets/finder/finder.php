@@ -198,7 +198,7 @@ class jdWidgetFinder extends jdWidget
     
     public function OnMouseLeave( jdWidget $source, GdkEvent $event ) 
     {
-        // Delegete leave event to mouse move, it contains the logic.
+        // Delegate leave event to mouse move, it contains the logic.
         $this->OnMouseMove( $source, $event );
     }
 
@@ -215,6 +215,9 @@ class jdWidgetFinder extends jdWidget
         
         $multiplierX = (int) $this->configuration->zoomoffset - abs( $center - $mouseX );
         $multiplierY = (int) $this->configuration->zoomoffset - abs( $this->configuration->zoom - $mouseY );
+        
+        // The x multiplier has a greater influence  on item scaling, so
+        // use the max zoom value for weight calculation.
         $multiplier = round( ( ( $multiplierX * (int) $this->configuration->zoom ) + $multiplierY ) / (int) $this->configuration->zoom );
 
         if ( $multiplier < 0 ) 
