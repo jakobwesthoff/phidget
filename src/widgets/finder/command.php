@@ -29,7 +29,7 @@ class jdWidgetFinderCommand
     {
         // Build gnome terminal command
         // TODO: Check for a better solution
-        $this->command = "{$command} &";
+        $this->command = "{$command} > /dev/null 2>&1 &";
         
         // Register gtk timeout
         Gtk::timeout_add( 100, array( $this, "execute" ) );
@@ -41,6 +41,6 @@ class jdWidgetFinderCommand
      */
     public function execute()
     {
-        system( $this->command );
+        exec( $this->command );
     }
 }
