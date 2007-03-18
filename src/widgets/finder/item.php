@@ -37,6 +37,10 @@ abstract class jdWidgetFinderItem
 	        case "clock":
 	            return new jdWidgetFinderClockItem(
 	                                $iconconf, $x, $y, (int) $widgetconf->size );
+	             
+	        case "clock":
+	            return new jdWidgetFinderTrashItem(
+	                                $iconconf, $x, $y, (int) $widgetconf->size );
 	                                
 	        case "icon":
 	        default: 
