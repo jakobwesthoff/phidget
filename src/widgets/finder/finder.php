@@ -72,13 +72,13 @@ class jdWidgetFinder extends jdWidget
         $this->lastMouseY = 0;
 
         // Make local properties
-        $iconZoom  = (int) $this->configuration->zoom;
-        $iconSize  = (int) $this->configuration->size;
-        $iconSpace = (int) $this->configuration->space;
+        $itemZoom  = (int) $this->configuration->zoom;
+        $itemSize  = (int) $this->configuration->size;
+        $itemSpace = (int) $this->configuration->space;
                 
         // Calculate x and y offsets
-        $xoffset = $iconSize + ( $iconSpace * ( ( $iconZoom - $iconSize ) / ( $iconSpace * 2 ) ) );
-        $yoffset = $iconZoom - round( $iconSize / 2.0 );
+        $xoffset = $itemSize + ( $itemSpace * ( ( $itemZoom - $itemSize ) / ( $itemSpace * 2 ) ) );
+        $yoffset = $itemZoom - round( $itemSize / 2.0 );
 
         foreach ( $this->configuration->items->item as $itemconfig ) 
         {
@@ -91,14 +91,14 @@ class jdWidgetFinder extends jdWidget
                                         );
 	                                        
             // Check for none standard item width
-	        if ( $item->size !== $iconSize ) 
+	        if ( $item->size !== $itemSize ) 
 	        {
 	            // Reset item x offset
-	            $item->x = $item->x + round( ( $item->size - $iconSize ) / 2 );
+	            $item->x = $item->x + round( ( $item->size - $itemSize ) / 2 );
 	        }
 
             // Calculate next x offset
-            $xoffset += $item->size + $iconSpace;
+            $xoffset += $item->size + $itemSpace;
             
             $this->items[] = $item;
         } 
@@ -117,8 +117,8 @@ class jdWidgetFinder extends jdWidget
          * At the moment this is just the maximum icon size
          */
         $this->size = array(
-            $realwidth + ( ( count( $this->items ) - 1 ) * $iconSpace ) + $iconZoom,
-            $iconZoom
+            $realwidth + ( ( count( $this->items ) - 1 ) * $itemSpace ) + $itemZoom,
+            $itemZoom
         );
         
         // Connect to the needed signals
@@ -136,7 +136,7 @@ class jdWidgetFinder extends jdWidget
                                     (string) $this->configuration->background,
                                     $this->size[0], 
                                     $this->size[1],
-                                    $iconSize
+                                    $itemSize
                                 );
     }
 
