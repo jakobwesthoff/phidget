@@ -1,6 +1,6 @@
 <?php
 /**
- * jdWidgetFinderIconItem
+ * jdWidgetFinderClockItem
  *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
