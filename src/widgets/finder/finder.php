@@ -41,13 +41,14 @@ class jdWidgetFinder extends jdWidget
 	                                        $this->configuration, 
 	                                        $itemconfig,
 	                                        $xoffset,
-	                                        $yoffset );
+	                                        $yoffset 
+                                        );
 	                                        
             // Check for none standard item width
 	        if ( $item->size !== $iconSize ) 
 	        {
 	            // Reset item x offset
-	            $item->x = $item->x + ( ( $item->size - $iconSize ) / 2 );
+	            $item->x = $item->x + round( ( $item->size - $iconSize ) / 2 );
 	        }
 
             // Calculate next x offset
@@ -56,7 +57,7 @@ class jdWidgetFinder extends jdWidget
             $this->items[] = $item;
         } 
 
-        //Calculate needed size
+        //Calculate the size of the complete widget
         $realwidth = 0;
 	    foreach ( $this->items as $item )
 	    {
@@ -64,15 +65,14 @@ class jdWidgetFinder extends jdWidget
 	    }
         
         //@todo: this is not always correct. Calculate the maximum needed size here.
-        
         /* Needed width is calculated as follows:
          * sum( icon size ) + ( ( number of icons ) - 1 ) * ( space between icons ) + ( maximum icon size )
          * Needed height is calculated as follows:
          * At the moment this is just the maximum icon size
          */
         $this->size = array(
-            $realwidth + ( count( $this->items ) - 1 ) * (int) $this->configuration->space + (int) $this->configuration->zoom,
-            (int) $this->configuration->zoom
+            $realwidth + ( ( count( $this->items ) - 1 ) * $iconSpace ) + $iconZoom,
+            $iconZoom
         );
         
         // Connect to the needed signals
@@ -85,6 +85,7 @@ class jdWidgetFinder extends jdWidget
         $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
         $this->connect( "leave-notify-event", array( $this, "OnMouseLeave" ) );
         
+        // Instantiate the background class
         $this->background = new jdWidgetFinderBackground( 
                                     (string) $this->configuration->background,
                                     $this->size[0], 
@@ -105,12 +106,12 @@ class jdWidgetFinder extends jdWidget
         $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
         $window->draw_rectangle( $gc, false, 0, 0, $this->size[0] - 1, $this->size[1] - 1 );
         
+        // Draw the background on the surface
         $this->background->draw( $gc, $window );
         
         // Draw every icon to the widget surface
         foreach( $this->items as $item ) 
         {
-            // Draw the icon
             $item->draw( $gc, $window );
         }
     }
@@ -118,33 +119,28 @@ class jdWidgetFinder extends jdWidget
     public function OnMousePress( jdWidget $source, GdkEvent $event ) 
     {   
         // Difference between event x and widget x
-        $diff = PHP_INT_MAX;
-        // The clicked icon instance
-        $clickedIcon = null;
+        $lastOffset = PHP_INT_MAX;
 
-        // Find the matching icon
+        // Find the matching item
         foreach ( $this->items as $item ) 
         {
-            $tmp = abs( $event->x - $item->x );
-            if ( $tmp < $diff ) 
+            if( $offset = abs( $event->x - $item->x ) >= $lastOffset || $item === $this->items[count( $this->items ) - 1] ) 
             {
-                $diff = $tmp;
-                $clickedIcon = $item;
+                // We have found our item
+                switch( $event->button ) 
+                {
+                    case 1:
+                        $item->doLeftClick( $source->window );
+                    break;
+                    case 3:
+                        $item->doRightClick( $source->window );
+                    break;
+                }
+                
+                break;
             }
-        }
-        
-        if ( $clickedIcon !== null ) 
-        {
-            // Check for left button click
-            if ( $event->button === 1 )
-            {
-                $clickedIcon->doLeftClick( $source->window );
-	        } 
-	        else if ( $event->button === 3 ) 
-	        {
-	            $clickedIcon->doRightClick( $source->window );
-	        }
-//            new jdWidgetFinderIconAction( $clickedIcon, $source->window );
+
+            $lastOffset = $offset;
         }
     }
 
@@ -165,20 +161,20 @@ class jdWidgetFinder extends jdWidget
 
         $realwidth = 0;
         // Scale all icons
-        // xoffset is center base
+        // xoffset is center based
         foreach ( $this->items as $item )
         {
-            $scalefactor = $this->calculateScaling( $xoffset, $event->x, $event->y ); // Calculate the new size and y position
-            $item->size = (int) $this->configuration->size * $scalefactor;
-            $item->y    = (int) $this->configuration->zoom - round( $item->size / 2.0 ) - ( 1.5 * $scalefactor );
+            $scalefactor    = $this->calculateScaling( $xoffset, $event->x, $event->y ); // Calculate the new size and y position
+            $item->size     = (int) $this->configuration->size * $scalefactor;
+            $item->y        = (int) $this->configuration->zoom - round( $item->size / 2.0 ) - ( 1.5 * $scalefactor );
 
-            $xoffset   += (int) $item->size + (int) $this->configuration->space;
-            $realwidth += $item->size + (int) $this->configuration->space;
-        }
-        
+            $xoffset       += (int) $item->size + (int) $this->configuration->space;
+            $realwidth     += $item->size + (int) $this->configuration->space;
+        }        
+        // We added a space behin the last item, which isn't really there
         $realwidth -= (int) $this->configuration->space;
 
-        // Calc new xoffset based on the real width of the bar
+        // Calc new xoffset based on the new width of the bar
         $xoffset = round( ( $this->size[0] - $realwidth ) / 2.0 );
         // Correct the overlapping positions and center the bar correctly
         // xoffset is left border based
@@ -226,8 +222,6 @@ class jdWidgetFinder extends jdWidget
             return 1.0;
         }
         
-        //@todo: something is definetly wrong with the scaling factor calculation
-        //       I will fix this tommorow I am just to tired now
         $scalefactor = ( ( (float) $multiplier * ( ( (float) $this->configuration->zoom - (float) $this->configuration->size ) / (float) $this->configuration->zoomoffset ) ) / (float) $this->configuration->size );
         $scalefactor = ( 1.0 + ( ( $scalefactor / $this->configuration->zoomoffset) * $multiplierY ) );
         
