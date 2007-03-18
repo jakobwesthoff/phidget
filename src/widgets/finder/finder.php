@@ -202,10 +202,11 @@ class jdWidgetFinder extends jdWidget
                 {
                     case 1:
                         $item->doLeftClick( $source->window );
-                    break;
+                        break;
+                        
                     case 3:
                         $item->doRightClick( $source->window );
-                    break;
+                        break;
                 }
                 
                 break;
@@ -318,7 +319,7 @@ class jdWidgetFinder extends jdWidget
         
         // The x multiplier has a greater influence  on item scaling, so
         // use the max zoom value for weight calculation.
-        $multiplier = ( ( $multiplierX * $itemZoom ) + $multiplierY ) / $itemZoom;
+        $multiplier = ( ( $multiplierX * ( $itemZoom / 2 ) ) + $multiplierY ) / ( $itemZoom / 2 );
 
         if ( $multiplier < 0 ) 
         {
