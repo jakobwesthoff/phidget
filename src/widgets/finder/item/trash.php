@@ -92,7 +92,7 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
     {
 
         // Add Gtk timeout for trash check
-        Gtk::timeout_add( 3000, array( $this, "checkTrashFiles" ) );
+        Gtk::timeout_add( 2000, array( $this, "checkTrashFiles" ) );
         
         // Get user home directory
 	    $home = getenv( "HOME" );
