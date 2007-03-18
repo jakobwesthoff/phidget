@@ -22,19 +22,23 @@
             <command>firefox</command>
           </item>
           <item>
-            <type>separator</type>
-          </item>
-          <item>
-            <type>clock</type>
-            <background>pixmaps/osXclock.png</background>
-          </item>
-          <item>
             <icon>pixmaps/help.png</icon>
             <command>yelp</command>
           </item>
           <item>
             <icon>pixmaps/gedit.png</icon>
             <command>gedit</command>
+          </item>
+          <item>
+            <type>separator</type>
+          </item>
+          <item>
+            <type>clock</type>
+            <background>pixmaps/gnomeclock.png</background>
+          </item>
+          <item>
+            <type>trash</type>
+            <icon>pixmaps/trash.png</icon>
           </item>
         </items>
     </widget>

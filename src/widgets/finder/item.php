@@ -38,7 +38,7 @@ abstract class jdWidgetFinderItem
 	            return new jdWidgetFinderClockItem(
 	                                $iconconf, $x, $y, (int) $widgetconf->size );
 	             
-	        case "clock":
+	        case "trash":
 	            return new jdWidgetFinderTrashItem(
 	                                $iconconf, $x, $y, (int) $widgetconf->size );
 	                                
