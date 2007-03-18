@@ -39,6 +39,7 @@
           <item>
             <type>trash</type>
             <icon>pixmaps/trash.png</icon>
+            <command>nautilus tarsh:</command>
           </item>
         </items>
     </widget>
