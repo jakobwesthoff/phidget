@@ -146,6 +146,13 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
 	            list( , $path ) = explode( " ", $line );
 	            
 	            $path = trim( $path );
+	            
+	            // If the path is "-" skip here
+	            if ( $path === "-" )
+	            {
+	                continue;
+	            }
+
 
 	            // Check directory exists
 	            if ( !file_exists( $path ) )
