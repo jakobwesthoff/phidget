@@ -6,7 +6,7 @@
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
  * @author Jakob Westhoff <jakob@php.net> 
- * @author Manuel Pichler <mp@manuel-pichler.de>
+ * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
 abstract class jdWidgetFinderItem 
@@ -25,28 +25,37 @@ abstract class jdWidgetFinderItem
                                        $x, 
                                        $y )
     {
+        
+        // Split at all separator chars
+	    $type = preg_split( "#[-_\.]#", strtolower( (string) $iconconf->type ) );
 
-        // Switch case is bad for a factory
-	    // TODO: Refactor this into a nicer structure.
-	    switch ( (string) $iconconf->type )
+	    // Strip all empty elements
+	    $type = array_filter( $type );
+	    
+	    // If size is one, use default namespace
+	    if ( count( $type ) <= 1 )
 	    {
-	        case "separator":
-	            return new jdWidgetFinderSeparator(
-	                                $iconconf, $x, $y, (int) $widgetconf->size );
-	                                
-	        case "clock":
-	            return new jdWidgetFinderClockItem(
-	                                $iconconf, $x, $y, (int) $widgetconf->size );
-	             
-	        case "trash":
-	            return new jdWidgetFinderTrashItem(
-	                                $iconconf, $x, $y, (int) $widgetconf->size );
-	                                
-	        case "icon":
-	        default: 
-	            return new jdWidgetFinderIconItem(
-	                                $iconconf, $x, $y, (int) $widgetconf->size );
+	        array_unshift( $type, "widget" );
 	    }
+	    
+	    // No type given, use default "icon" 
+	    if ( count( $type ) === 1 )
+	    {
+	        array_push( $type, "icon" ); 
+	    }
+	    
+	    // Camel case all words
+	    $type = array_map( "ucfirst", $type );
+	    
+	    // Generate class name for item
+	    $class = "jd{$type[0]}Finder{$type[1]}Item";
+	    
+	    // Load item class and create instance
+	    $refClass = new ReflectionClass( $class );
+	    
+	    return $refClass->newInstanceArgs(
+	        array( $iconconf, $x, $y, (int) $widgetconf->size )
+	    );
     }
     
     /**
