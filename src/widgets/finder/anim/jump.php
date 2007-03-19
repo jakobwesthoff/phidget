@@ -32,12 +32,15 @@ class jdWidgetFinderAnimationJump implements jdWidgetFinderAnimation
 
         // Get current window size
         $size = $this->window->get_size();
+        
+        // The animation step size
+	    $step = 3;
 
         $this->properties = array(
             "count"   =>  0,
-            "step"    =>  3,
+            "step"    =>  $step,
             "size"    =>  $this->item->size,
-            "jump"    =>  1 + abs( floor( ( $size[1] - $this->item->size ) / 3 ) ),
+            "jump"    =>  1 + abs( floor( ( $size[1] - $this->item->size ) / $step ) ),
             "x"       =>  $this->item->x,
             "y"       =>  $this->item->y
         );
@@ -50,7 +53,7 @@ class jdWidgetFinderAnimationJump implements jdWidgetFinderAnimation
             $this->step *= -1;
         }
 
-        if ( $this->count < ( 4 * $this->jump ) ) {
+        if ( $this->count < ( 6 * $this->jump ) ) {
 
             $this->y += $this->step;
 
@@ -58,7 +61,7 @@ class jdWidgetFinderAnimationJump implements jdWidgetFinderAnimation
             $this->item->y    = $this->y;
             $this->item->size = $this->size;
 
-            Gtk::timeout_add( 2, array( $this, "animate" ) );
+            Gtk::timeout_add( 10, array( $this, "animate" ) );
         } else {
             // Set current icon unlocked
             $this->item->locked = false;
