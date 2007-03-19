@@ -6,10 +6,10 @@
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
  * @author Jakob Westhoff <jakob@php.net> 
- * @author Manuel Pichler <mp@manuel-pichler.de>
+ * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
-class jdWidgetFinderSeparator extends jdWidgetFinderItem  
+class jdWidgetFinderSeparatorItem extends jdWidgetFinderItem  
 {
     /**
      * Separator item width.
