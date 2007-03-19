@@ -189,19 +189,22 @@ class jdWidgetFinder extends jdWidget
      */
     public function OnMousePress( jdWidget $source, GdkEvent $event ) 
     {   
-        // Difference between event x and widget x
-        $lastOffset = PHP_INT_MAX;
 
         // Find the matching item
         foreach ( $this->items as $item ) 
         {
-            if( $offset = abs( $event->x - $item->x ) >= $lastOffset || $item === $this->items[count( $this->items ) - 1] ) 
+            // Calculate item x min/max range
+	        $maxX = $item->x + ( $item->size / 2 );
+	        $minX = $item->x - ( $item->size / 2 );
+
+            if ( $event->x <= $maxX && $event->x >= $minX ) 
             {
                 // We have found our item
                 switch( $event->button ) 
                 {
                     case 1:
-                        $item->doLeftClick( $source->window );
+                        echo $item->configuration->command . "\n";
+                        // $item->doLeftClick( $source->window );
                         break;
                         
                     case 3:
@@ -211,8 +214,6 @@ class jdWidgetFinder extends jdWidget
                 
                 break;
             }
-
-            $lastOffset = $offset;
         }
     }
 
