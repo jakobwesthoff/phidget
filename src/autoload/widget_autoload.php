@@ -16,7 +16,7 @@ return array(
     'jdWidgetFinderItem'            =>  'widgets/finder/item.php',
     'jdWidgetFinderClockItem'       =>  'widgets/finder/item/clock.php',
     'jdWidgetFinderIconItem'        =>  'widgets/finder/item/icon.php',
-    'jdWidgetFinderSeparator'       =>  'widgets/finder/item/separator.php',
+    'jdWidgetFinderSeparatorItem'   =>  'widgets/finder/item/separator.php',
     'jdWidgetFinderTrashItem'       =>  'widgets/finder/item/trash.php',
 );
 
