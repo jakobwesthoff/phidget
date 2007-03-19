@@ -34,7 +34,7 @@
           </item>
           <item>
             <type>clock</type>
-            <background>pixmaps/gnomeclock.png</background>
+            <background>pixmaps/osXclock.png</background>
           </item>
           <item>
             <type>trash</type>
