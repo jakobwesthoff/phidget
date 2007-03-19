@@ -2,11 +2,11 @@
 
 require_once( 'config/config.php' );
 
-$xml = simplexml_load_file( 'config/widgets.xml' );
+$config = new jdBaseConfigLoader();
 
 $widgets = array();
 
-foreach( $xml->widget as $widgetConfig ) 
+foreach( $config->widgets->widget as $widgetConfig ) 
 {
     $class = 'jdWidget' . ucfirst( (string) $widgetConfig['type'] );
     $widget = new $class( $widgetConfig );
