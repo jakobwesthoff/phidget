@@ -79,7 +79,7 @@ abstract class jdWidget extends GtkWindow
         $this->show_all();
     }
 
-    public function configure_event( GdkWindow $window, GdkEvent $event ) 
+    public function configure_event( jdWidget $window, GdkEvent $event )
     {
         // Just repaint if the widget position or size has changed.
         if ( $this->x !== $event->x
@@ -95,7 +95,7 @@ abstract class jdWidget extends GtkWindow
         }
     }
 
-    public function expose_event( GdkWindow $window, GdkEvent $event ) 
+    public function expose_event( jdWidget $window, GdkEvent $event ) 
     {
         $gdkwindow = $event->window;
         $gc = new GdkGC( $gdkwindow );
