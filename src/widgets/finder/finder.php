@@ -203,8 +203,7 @@ class jdWidgetFinder extends jdWidget
                 switch( $event->button ) 
                 {
                     case 1:
-                        echo $item->configuration->command . "\n";
-                        // $item->doLeftClick( $source->window );
+                        $item->doLeftClick( $source->window );
                         break;
                         
                     case 3:
