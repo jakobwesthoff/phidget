@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * jdWidget
+ *
+ * @version //autogen//
+ * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
+ *            All rights reserved.
+ * @author Jakob Westhoff <jakob@php.net>
+ * @author Manuel Pichler <mapi@manuel-pichler.de>
+ * @license GPL
+ */
 abstract class jdWidget extends GtkWindow 
 {
 
@@ -11,7 +20,12 @@ abstract class jdWidget extends GtkWindow
     protected $bgPixbuf;
     protected $configuration;
 
-    public function __construct( $configuration ) 
+    /**
+     * Class constructor takes the widget configuration as argument.
+     *
+     * @param SimpleXMLElement $configuration
+     */
+    public final function __construct( SimpleXMLElement $configuration ) 
     {
         // Call the parent constructor
         parent::__construct();
@@ -65,8 +79,9 @@ abstract class jdWidget extends GtkWindow
         $this->show_all();
     }
 
-    public function configure_event( $window, $event ) 
+    public function configure_event( GdkWindow $window, GdkEvent $event ) 
     {
+        // Just repaint if the widget position or size has changed.
         if ( $this->x !== $event->x
            || $this->y !== $event->y
            || $this->height !== $event->height
@@ -80,7 +95,7 @@ abstract class jdWidget extends GtkWindow
         }
     }
 
-    public function expose_event( $window, $event ) 
+    public function expose_event( GdkWindow $window, GdkEvent $event ) 
     {
         $gdkwindow = $event->window;
         $gc = new GdkGC( $gdkwindow );
@@ -93,10 +108,24 @@ abstract class jdWidget extends GtkWindow
 
     public abstract function OnExpose( GdkGC $gc, GdkWindow $window );
 
+    /**
+     * Returns the size of the widget as an <tt>array</tt>.
+     * 
+     * <code>
+     *   array(
+     *       0  =>  (widget width),
+     *       1  =>  (widget height)
+     *   );
+     * </code>
+     *
+     * @return array
+     */
     protected abstract function getSize();
 
+    /**
+     * Main init method for widget implementations. Use this for custom init
+     * tasks.
+     */
     protected abstract function init();
 
 }
-
-?>
