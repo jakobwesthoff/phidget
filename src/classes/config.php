@@ -1,6 +1,6 @@
 <?php
 /**
- * jdBaseConfigLoader
+ * jdConfig
  *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
@@ -9,18 +9,18 @@
  * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
-class jdBaseConfigLoader 
+class jdConfig 
 {
     
     /**
-     * The name of the widget file name.
+     * The name of the widget file.
      */
     const CONFIG_WIDGET = "widgets.xml";
     
     /**
      * The name of the user configuration directory.
      */
-    const CONFIG_LOCAL_DIR = ".phidgets";
+    const CONFIG_LOCAL_DIR = ".jade";
     
     /**
      * Configuration properties.
@@ -28,15 +28,20 @@ class jdBaseConfigLoader
      * @type array<SimpleXMLElement>
      * @var array $properties
      */
-    protected $properties = array();
+    protected $properties;
     
-    /**
-     * The simple xml configuration.
-     * 
-     * @type SimpleXMLElement
-     * @var SimpleXMLElement $
-     */
-    public function __construct()
+    private static $instance = null;
+
+    public static function getInstance() 
+    {
+        if ( self::$instance === null ) 
+        {
+            self::$instance = new jdConfig();
+        }
+        return self::$instance;
+    }
+
+    private function __construct()
     {
 	    // Generate local file name
 	    $fileName = sprintf(
