@@ -32,7 +32,7 @@ class jdWidgetFinderCommand
         $this->command = "{$command} > /dev/null 2>&1 &";
         
         // Register gtk timeout
-        Gtk::timeout_add( 100, array( $this, "execute" ) );
+        Gtk::timeout_add( 10, array( $this, "execute" ) );
     }
     
     /**
