@@ -1,43 +1,42 @@
 <?php
 /**
  * jdWidgetFinderBackground
- * 
+ *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
- * @author Jakob Westhoff <jakob@php.net> 
+ * @author Jakob Westhoff <jakob@php.net>
  * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
 class jdWidgetFinderBackground {
-    
+
     protected $properties = array();
-    
-    public function __construct( $filename, $width, $height, $size )
+
+    public function __construct( $filename, jdWidgetFinderEffectSizeStruct $sizes )
     {
         $this->properties = array(
             "pixbuf" => GdkPixbuf::new_from_file( $filename ),
-            "width"  => $width,
-            "height" => $height,
-            "size"   => $size);
+            "sizes"  => $sizes
+        );
     }
-    
+
     public function draw( GdkGC $gc, GdkWindow $window )
     {
-        
+
         $cmap = $window->get_colormap();
-        
+
         // Calculate x/y offsets and width/height
-        $scaled  = round( (int) $this->size * 0.9 );
-        $offsetY = $this->height -  $this->size;
-        $width   = $this->width - ( 2 * $scaled );
+        $scaled  = round( (int) $this->sizes->minHeight * 0.9 );
+        $offsetX = round( ( $this->sizes->maxWidth - $this->sizes->minWidth ) * 0.5 );
+        $offsetY = $this->sizes->maxHeight - $this->sizes->minHeight;
 
         // Create a item border
         $gc->set_foreground( $cmap->alloc_color( "#cccccc" ) );
-        $window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $scaled, $offsetY, $width - 1, $scaled );
-        $window->draw_rectangle( $gc, false, $scaled, $offsetY, $width - 1, $scaled );
+        $window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $offsetX, $offsetY, $this->sizes->minWidth - 1, $scaled );
+        $window->draw_rectangle( $gc, false, $offsetX, $offsetY, $this->sizes->minWidth - 1, $scaled );
     }
-    
+
     /**
      * Overloaded function to retrieve the available properties
      * (Default behaviour: Everything not explicitedly denied will be allowed)
