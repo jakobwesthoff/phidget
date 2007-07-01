@@ -4,11 +4,12 @@
     -->
     <widget type="finder" x="300" y="500">
         <background>pixmaps/bg.png</background>
-        <size>64</size>
-        <zoom>128</zoom>
-        <space>16</space>
-		<zoomoffset>140</zoomoffset>
-        <items> 
+        <effect className="jdWidgetFinderEffectScale">
+          <size>48</size>
+          <zoom>128</zoom>
+          <space>6</space>
+        </effect>
+        <items>
           <item>
             <icon>pixmaps/nautilus.png</icon>
             <command>nautilus</command>
@@ -28,9 +29,6 @@
           <item>
             <icon>pixmaps/gedit.png</icon>
             <command>gedit</command>
-          </item>
-          <item>
-            <type>separator</type>
           </item>
           <item>
             <type>clock</type>
