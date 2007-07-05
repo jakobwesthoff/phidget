@@ -6,11 +6,11 @@
         <background>pixmaps/bg.png</background>
         <effect className="jdWidgetFinderEffectScale">
           <size>48</size>
-          <zoom>128</zoom>
+          <zoom>192</zoom>
           <space>6</space>
         </effect>
         <items>
-          <item>
+          <item class="jdWidgetFinderIconItem">
             <icon>pixmaps/nautilus.png</icon>
             <command>nautilus</command>
           </item>

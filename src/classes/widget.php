@@ -9,7 +9,7 @@
  * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
-abstract class jdWidget extends GtkWindow 
+abstract class jdWidget extends GtkWindow
 {
 
     protected $x;
@@ -25,7 +25,7 @@ abstract class jdWidget extends GtkWindow
      *
      * @param SimpleXMLElement $configuration
      */
-    public final function __construct( SimpleXMLElement $configuration ) 
+    public final function __construct( SimpleXMLElement $configuration )
     {
         // Call the parent constructor
         parent::__construct();
@@ -35,7 +35,7 @@ abstract class jdWidget extends GtkWindow
         // Initialize the widget
         $this->init();
 
-        // Do all the necessary gtk stuff to display the widget on 
+        // Do all the necessary gtk stuff to display the widget on
         // the desktop
 
         // Connect destroy event
@@ -85,7 +85,7 @@ abstract class jdWidget extends GtkWindow
         if ( $this->x !== $event->x
            || $this->y !== $event->y
            || $this->height !== $event->height
-           || $this->width !== $event->width ) 
+           || $this->width !== $event->width )
         {
             $this->x = $event->x;
             $this->y = $event->y;
@@ -95,22 +95,22 @@ abstract class jdWidget extends GtkWindow
         }
     }
 
-    public function expose_event( jdWidget $window, GdkEvent $event ) 
+    public final function expose_event( jdWidget $window, GdkEvent $event )
     {
         $gdkwindow = $event->window;
         $gc = new GdkGC( $gdkwindow );
-        
+
         // Draw the pseudo transparency background
         $gdkwindow->draw_pixbuf( $gc, $this->bgPixbuf, $this->x + $event->area->x, $this->y + $event->area->y, $event->area->x, $event->area->y, $event->area->width, $event->area->height );
-
-        return $this->OnExpose( $gc, $gdkwindow );
+print_r( $event->area );
+        return $this->OnExpose( $gc, $event );
     }
 
-    public abstract function OnExpose( GdkGC $gc, GdkWindow $window );
+    public abstract function OnExpose( GdkGC $gc, GdkEvent $event );
 
     /**
      * Returns the size of the widget as an <tt>array</tt>.
-     * 
+     *
      * <code>
      *   array(
      *       0  =>  (widget width),

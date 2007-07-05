@@ -16,25 +16,27 @@ class jdWidgetFinderBackground {
     public function __construct( $filename, jdWidgetFinderEffectSizeStruct $sizes )
     {
         $this->properties = array(
-            "pixbuf" => GdkPixbuf::new_from_file( $filename ),
-            "sizes"  => $sizes
+            "pixbuf"  =>  GdkPixbuf::new_from_file( $filename ),
+            "sizes"   =>  $sizes,
+            "scaled"  =>  round( (int) $sizes->minHeight * 0.9 ),
+            "x"       =>  round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 ),
+            "y"       =>  $sizes->maxHeight - $sizes->minHeight
         );
     }
 
-    public function draw( GdkGC $gc, GdkWindow $window )
+    public function draw( GdkGC $gc, GdkEvent $event )
     {
 
-        $cmap = $window->get_colormap();
+        $cmap = $event->window->get_colormap();
 
         // Calculate x/y offsets and width/height
-        $scaled  = round( (int) $this->sizes->minHeight * 0.9 );
-        $offsetX = round( ( $this->sizes->maxWidth - $this->sizes->minWidth ) * 0.5 );
-        $offsetY = $this->sizes->maxHeight - $this->sizes->minHeight;
+        $x = ( $event->area->x < $this->x ? $this->x : $event->area->x );
+        $w = ( ( $event->area->x + $event->area->width ) < ( $this->x + $this->sizes->minWidth ) ? $event->area->width : ( $this->sizes->minWidth - $x ) );
 
         // Create a item border
         $gc->set_foreground( $cmap->alloc_color( "#cccccc" ) );
-        $window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $offsetX, $offsetY, $this->sizes->minWidth - 1, $scaled );
-        $window->draw_rectangle( $gc, false, $offsetX, $offsetY, $this->sizes->minWidth - 1, $scaled );
+        //$event->window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $x, $this->y, $w - 1, $this->scaled );
+        //$event->window->draw_rectangle( $gc, false, $x, $this->y, $w - 1, $this->scaled );
     }
 
     /**
@@ -71,7 +73,7 @@ class jdWidgetFinderBackground {
         {
             case 'width':
             case 'height':
-            case 'size':
+            case 'sizes':
                 $this->properties[$key] = $val;
                 break;
 

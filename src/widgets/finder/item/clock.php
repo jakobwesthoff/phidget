@@ -47,7 +47,7 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
 
         // Free resource
         unset( $pixbuf );
-
+/*
 
         $cmap = $window->get_colormap();
         $color = $cmap->alloc_color( "#444444" );
@@ -75,16 +75,13 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         // Draw seconds
         list( $x, $y ) = $this->calculateXY( $s, ( $this->size * 0.8 ) );
         $window->draw_line( $gc, $this->x, $this->y, $x, $y );
-
+*/
         // Add gtk timer
         Gtk::timeout_add( 1000, array( $this, "updateClock" ) );
     }
 
     public function updateClock()
     {
-
-        list( $width, $height ) = $this->window->get_size();
-
         $this->window->invalidate_rect(
             new GdkRectangle(
                 $this->x - ( $this->size / 2 ),

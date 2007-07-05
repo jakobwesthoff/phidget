@@ -147,24 +147,31 @@ class jdWidgetFinder extends jdWidget
      * @param GdkGC $gc
      * @param GdkWindow $window
      */
-    public function OnExpose( GdkGC $gc, GdkWindow $window )
+    public function OnExpose( GdkGC $gc, GdkEvent $event )
     {
-        $cmap = $window->get_colormap();
+        $cmap = $event->window->get_colormap();
 
         // DEBUG: Draw border around the widget
         if ( $this->debug === true )
         {
             $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
-            $window->draw_rectangle( $gc, false, 0, 0, $this->size[0] - 1, $this->size[1] - 1 );
+            $event->window->draw_rectangle( $gc, false, 0, 0, $this->size[0] - 1, $this->size[1] - 1 );
         }
 
         // Draw the background on the surface
-        $this->background->draw( $gc, $window );
+        $this->background->draw( $gc, $event );
+
+        $area = $event->area;
 
         // Draw every icon to the widget surface
         foreach( $this->items as $item )
         {
-            $item->draw( $gc, $window );
+            if ( $item->x < $area->x || $item->x > ( $area->x + $area->width ) )
+            {
+                continue;
+            }
+
+            $item->draw( $gc, $event->window );
         }
     }
 

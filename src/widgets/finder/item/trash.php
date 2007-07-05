@@ -91,11 +91,16 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
     {
          if ( $this->checkTrashFiles() )
          {
+             print "CHANGE\n";
              // Ask for redraw
-             list( $width, $height ) = $this->window->get_size();
-
-             $this->window->invalidate_rect(
-                                 new GdkRectangle( 0, 0, $width, $height ), false );
+            $this->window->invalidate_rect(
+                new GdkRectangle(
+                    $this->x - ( $this->size / 2 ),
+                    $this->y - ( $this->size / 2 ),
+                    $this->size,
+                    $this->size
+                 ), false
+            );
          }
     }
 
