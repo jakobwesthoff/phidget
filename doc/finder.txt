@@ -1,0 +1,211 @@
+Finder - A phidgets widget application starter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:Author: Jakob Westhoff
+:Revision: $id$
+:Date: $date$
+:Status: Draft
+
+.. sectnum::
+
+.. contents::
+
+
+=====
+Scope
+=====
+
+This document will describe the design decissions made during the creation of
+the finder widget for the phidget system. It describes the interfaces and
+decisions made for the effect drawing system, the animation system and the
+item component. It will not describe the different available items in detail
+nor the effects and animations. Moreover it does not cover the design of
+phidgets at all. Informations about the general phidgets design can be
+retrieved from it's own design document.
+
+======================
+Purpose of this widget
+======================
+
+Finder is mainly designed as an application starterbar with neat visual
+effects, which should be easy to handle and administrate. Moreover it should
+be easily extendible with new effects or item types. These could be something
+like clocks, calendars or the X eyes to just name a few possibilities.
+
+=========================
+General design decissions
+=========================
+
+The widget can be seperated into three main categories, effects, animations
+and items. All of these subsystems are implemented in their own structure of
+objects which should make the substitution of each one easily feasible. This
+equips the widget with an enorme flexibility.
+
+Items
+=====
+
+Any item consists of it's coordinates on the bar, it's size and function, which
+is capable of creating and returning a pixmap for this item at an arbitrary
+size. In most cases this pixmap is only a scaled icon picture, but there may be
+scenarios where the item returns a completely owner drawn picture, like a clock
+item.
+
+Every class which wants to represent an item needs to be derived from the
+abstract item class: ::
+
+    abstract class item {        
+        // Needed properties
+        public $x;
+        public $y;
+        public $width;
+        public $height;
+
+        // Abstract function which needs to be implemented
+        public abstract function getPixmap();
+
+        // Event function which may be overridden to capture the event
+        public function onMouseClick( GdkEvent $event );
+    }
+
+$x, $y, $width, $height:
+    This variables are needed to store the coordinates and size of every item.
+
+getPixmap():
+    Create and return the pixmap which represents this item. The pixmap must
+    always satisfy the stored size.
+
+onMouseClick():
+    This function is always triggered if a click event on this perticular item
+    is encountered.
+    Even though these method is not declared to be abstract it is somewhat
+    special. These method is completely blank in the base class implementation.
+    It is only defined to be callable without any error on every item derived
+    class. This method can easily be overriden if the appropriate event
+    informations are needed by the item implementation.
+
+Animations
+==========
+
+Animations may be registered for any item seperately. It can supply a timing
+value during it's registration. This value defines the time in milliseconds
+between each call to the **animate** function of the animation object.
+
+Every Animation needs to implement the animation interface: ::
+    
+    interface Animation {
+        public function register();
+        public function animate( AnimationDataStruct $data );
+    }
+
+register():
+    The register function is called if this animation object is registered for
+    any item. It must return the delay after which a redraw and therefore a
+    call to **animate** should be issued. The time is represented in
+    milliseconds.
+
+animate( AnimationDataStruct $data ):
+    This function is called every time the animation needs to be applied. The
+    *AnimationDataStruct* may be manipulated in any way you can think of. The    
+    given struct is defined below in a greater detail. The return value of this
+    function must be either true or false. It indicates whether the animation
+    is completed, in which case the object is deleted and the appropriate timer
+    is stopped. Or if the animation needs further processing, in which case the
+    animate function will be called again after the defined delay.
+
+AnimationDataStruct
+-------------------
+
+The *AnimationDataStruct* is filled and sent to any animation object which
+needs to be processed. It is defined in the following way: ::
+
+    class AnimationDataStruct {
+        public $x;
+        public $y;
+        public $width;
+        public $height;
+        public $pixmap;
+    }
+
+$x, $y:
+    The coordinates at which the item will be drawn
+
+$width, $height:
+    The dimensions this item will take when drawn
+
+$pixmap:
+    The pixmap drawn for this item. This may be modified to show some effect
+    like glowing, for example.
+
+Effects
+=======
+
+An effect class is responsible for positioning and drawing all items to the
+given gdk surface, namely the bar. Moreover it needs to store and process
+registered animations for each item.
+
+Every effect class needs to be derived from the following abstract effect
+class: ::
+
+    abstract class Effect {
+        public abstract function onExpose( GdkGC $gc, GdkEvent $event );
+        
+        // These methods maybe overriden if they are needed
+        public function onMouseMove( GdkEvent $event );
+        public function onMousePress( GdkEvent $event );
+        public function onMouseRelease( GdkEvent $event );
+
+        // The following methods should not be overridden, they are
+        // implemented to be used by the animation subsystem
+        public final function registerAnimation( $item, $animation );
+        public final function getRegisteredAnimations( $item );
+    }
+
+onExpose( GdkGC $gc, GdkEvent $event ):
+    The onExpose method is called every time the widget needs to be redrawn.
+    It is advised to redraw only the area stored in the given GdkEvent for
+    performance reasons. Before an item is drawn to the surface the functions
+    needs to check if an animation is registered for the current item. This
+    can be acomplished by calling the **getRegisteredAnimations( $item )**
+    function on the abstract effect base class. A filled *AnimationDataStruct*
+    needs to be send to all retrieved animation objects. You can read more
+    about this in the `Animations`_ section of this document.
+    Furthermore the coordinates and size values of every new drawn item needs
+    to be updated inside the item object. This is required for the mapping of
+    mouse click events to the appropriate items.
+
+onMouseMove( GdkEvent $event ):
+    See **onMouseRelease( GdkEvent $event )**
+
+onMousePress( GdkEvent $event ):
+    See **onMouseRelease( GdkEvent $event )**
+
+onMouseRelease( GdkEvent $event ):
+    The mouse methods are called every time a mouse event is triggered on the
+    widget. Some effect classes like some sort of scaling effect may need the
+    mouse move event to determine current scaling values for example.
+    Even though these methods are not declared to be abstract they are somewhat
+    special. These methods are completely blank in the base class
+    implementation. They are only defined to be callable without any error on
+    every effect derived class. These methods can easily be overriden if the
+    appropriate event informations are needed by the effect implementation.
+
+registerAnimation( $item, $animation ):
+    Register an arbitrary animation object for a specified item. 
+    This function should not be overridden in any deriving class, therefore it
+    is declared to be final.
+
+getRegisteredAnimations( $item ):
+    Returns an array of animation objects registered for the specified item
+    object. If no animation is registered for the specified item an empty array
+    is returned.
+    This function should not be overridden in any deriving class, therefore it
+    is declared to be final.
+
+
+
+
+..
+   Local Variables:
+   mode: rst
+   fill-column: 79
+   End: 
+   vim: et syn=rst tw=79
