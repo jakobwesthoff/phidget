@@ -40,7 +40,7 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         }
 
         // Scale this pixbuf
-        $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );
+        $pixbuf = $this->pixbuf->scale_simple( $this->width, $this->height, Gdk::INTERP_HYPER );
 
         // Draw current pixbuf
         $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x, $this->y );
@@ -57,16 +57,16 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         list( $h, $i , $s ) = explode( ":", date( "h:i:s" ) );
 
         // Calculate pointer x/y center
-        $offsetY = ( $this->y + ( $this->size * 0.5 ) );
-        $offsetX = ( $this->x + ( $this->size * 0.5 ) );
+        $offsetY = ( $this->y + ( $this->height * 0.5 ) );
+        $offsetX = ( $this->x + ( $this->width * 0.5 ) );
 
         // Draw hours
-        list( $x, $y ) = $this->calculateXY( ( $h * 5 ) + ( $i / 12 ), ( $this->size * 0.5 ) );
+        list( $x, $y ) = $this->calculateXY( ( $h * 5 ) + ( $i / 12 ), ( $this->width * 0.5 ) );
         $window->draw_line( $gc, $offsetX, $offsetY, $x, $y );
         $window->draw_line( $gc, $offsetX + 1, $offsetY + 1, $x, $y );
 
         // Draw minutes
-        list( $x, $y ) = $this->calculateXY( $i, ( $this->size * 0.7 ) );
+        list( $x, $y ) = $this->calculateXY( $i, ( $this->width * 0.7 ) );
         $window->draw_line( $gc, $offsetX, $offsetY, $x, $y );
         $window->draw_line( $gc, $offsetX + 1, $offsetY + 1, $x, $y );
 
@@ -76,7 +76,7 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
 
 
         // Draw seconds
-        list( $x, $y ) = $this->calculateXY( $s, ( $this->size * 0.8 ) );
+        list( $x, $y ) = $this->calculateXY( $s, ( $this->width * 0.8 ) );
         $window->draw_line( $gc, $offsetX, $offsetY, $x, $y );
 
         // Add gtk timer
@@ -89,8 +89,8 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
             new GdkRectangle(
                 $this->x,
                 $this->y,
-                $this->size,
-                $this->size
+                $this->width,
+                $this->height
              ), false
         );
     }
@@ -103,8 +103,8 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         $ga = ( 180 - $be - $al );
 
         return array(
-            round( ( $this->x + ( $this->size * 0.5 ) ) + ( ( $b * sin( deg2rad( $al ) ) ) / sin( deg2rad( $be ) ) ) ),
-            round( ( $this->y + ( $this->size * 0.5 ) ) - ( ( $b * sin( deg2rad( $ga ) ) ) / sin( deg2rad( $be ) ) ) )
+            round( ( $this->x + ( $this->width * 0.5 ) ) + ( ( $b * sin( deg2rad( $al ) ) ) / sin( deg2rad( $be ) ) ) ),
+            round( ( $this->y + ( $this->height * 0.5 ) ) - ( ( $b * sin( deg2rad( $ga ) ) ) / sin( deg2rad( $be ) ) ) )
         );
     }
 

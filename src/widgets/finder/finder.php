@@ -184,28 +184,15 @@ class jdWidgetFinder extends jdWidget
      */
     public function OnMousePress( jdWidget $source, GdkEvent $event )
     {
-
         // Find the matching item
         foreach ( $this->items as $item )
         {
             // Calculate item x min/max range
-            $maxX = $item->x + ( $item->size / 2 );
-            $minX = $item->x - ( $item->size / 2 );
+            $maxX = $item->x + $item->size;
 
-            if ( $event->x <= $maxX && $event->x >= $minX )
+            if ( $event->x <= $maxX && $event->x >= $item->x )
             {
-                // We have found our item
-                switch( $event->button )
-                {
-                    case 1:
-                        $item->doLeftClick( $source->window );
-                        break;
-
-                    case 3:
-                        $item->doRightClick( $source->window );
-                        break;
-                }
-
+                $item->onMouseClick( $event );
                 break;
             }
         }

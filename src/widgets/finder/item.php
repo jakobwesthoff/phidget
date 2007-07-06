@@ -2,6 +2,13 @@
 /**
  * jdWidgetFinderItem
  *
+ * @property-read SimpleXMLElement $configuration Settings from the widget
+ * config file.
+ * @property integer $width The current item width.
+ * @property integer $height The current item height.
+ * @property integer $x The current item x offset.
+ * @property integer $y The current item y offset.
+ *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
@@ -73,10 +80,20 @@ abstract class jdWidgetFinderItem
         $this->properties = array(
             "configuration"  =>  $configuration,
             "locked"         =>  false,
-            "size"           =>  $size,
+            "width"          =>  $size,
+            "height"         =>  $size,
             "x"              =>  0,
             "y"              =>  0
         );
+    }
+
+    /**
+     * Template init method for items. You can use this method for init
+     * tasks that require a complete environment setup.
+     */
+    public function init()
+    {
+        // Nothing here
     }
 
     /**
@@ -113,7 +130,8 @@ abstract class jdWidgetFinderItem
         {
             case "x":
             case "y":
-            case "size":
+            case "width":
+            case "height":
             case "locked":
                 $this->properties[$key] = $val;
                 break;
@@ -124,21 +142,11 @@ abstract class jdWidgetFinderItem
     }
 
     /**
-     * Empty template method for left mouse click.
+     * Empty template method for mouse clicks.
      *
-     * @param GdkWindow $window
+     * @param GdkEvent $event
      */
-    public function doLeftClick( GdkWindow $window )
-    {
-
-    }
-
-    /**
-     * Empty template method for right mouse click.
-     *
-     * @param GdkWindow $window
-     */
-    public function doRightClick( GdkWindow $window )
+    public function onMouseClick( GdkEvent $event )
     {
 
     }

@@ -28,7 +28,7 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
 
     public function draw( GdkGC $gc, GdkWindow $window )
     {
-        $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );
+        $pixbuf = $this->pixbuf->scale_simple( $this->width, $this->height, Gdk::INTERP_HYPER );
 
         // The icon position is defined by its center point, but gdk needs the top left corner.
         // Calc the new point and draw.
@@ -39,13 +39,14 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
     /**
      * This item recieved a left clicked.
      *
-     * @param GdkWindow $window
+     * @param GdkEvent $event
      */
-    public function doLeftClick( GdkWindow $window )
+    public function onMouseClick( GdkEvent $event )
     {
+        print "CLICK(" . ( (string) $this->configuration->command ) . ")\n";return;
         // Create new jump animation
         // TODO: Make this configurable?
-        $animation = new jdWidgetFinderAnimationJump( $this, $window );
+        $animation = new jdWidgetFinderAnimationJump( $this, $event->window );
 
         // Start animation
         $animation->animate();

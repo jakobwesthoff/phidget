@@ -88,20 +88,20 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         foreach ( $this->items as $i => $item )
         {
             // Calculate new item x offset
-            $offsetX = $xoffset;//$xoffset + floor( $item->size * 0.5 );
+            $offsetX = $xoffset;
 
             // Check for a position or size change
-            if ( $offsetX !== $item->x || $this->size !== $item->size )
+            if ( $offsetX !== $item->x || $this->size !== $item->width )
             {
                 if ( $repaint["startOffset"] === -1 )
                 {
-                    $repaint["startOffset"] = $offsetX;//( $offsetX - ( $item->size * 0.5 ) );
+                    $repaint["startOffset"] = $offsetX;
                 }
-                $repaint["endOffset"] = $offsetX + $item->size;//( $offsetX + ( $item->size * 0.5 ) );
+                $repaint["endOffset"] = $offsetX + $item->width;
             }
 
             $item->x  = $offsetX;
-            $xoffset += $item->size + $this->space;
+            $xoffset += $item->width + $this->space;
         }
 
         return new GdkRectangle(
@@ -121,16 +121,20 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
             // Resize a scaled item
             if ( isset( $scalings[$i] ) )
             {
-                $item->size = round( $this->size + ( $this->scaleSize * $scalings[$i] ) );
-                $item->y    = $this->zoom - $item->size;
+                $size = round( $this->size + ( $this->scaleSize * $scalings[$i] ) );
+
+                $item->width  = $size;
+                $item->height = $size;
+                $item->y      = $this->zoom - $item->height;
             }
             else
             {
-                $item->size = $this->size;
-                $item->y    = $this->zoom - $this->size;
+                $item->width  = $this->size;
+                $item->height = $this->size;
+                $item->y      = $this->zoom - $this->size;
             }
 
-            $width += ( $item->size + $this->space );
+            $width += ( $item->width + $this->space );
         }
 
         // We added a space behind the last item, which isn't really there
@@ -164,7 +168,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
             $scaleY = ( $y / $this->scaleSize );
             $scaleY = ( $scaleY > 1.0 ? 1.0 : $scaleY );
 
-            $scaleX = ( $area - abs( ( $item->x + ( $item->size / 2 ) ) - $x ) ) / $area;
+            $scaleX = ( $area - abs( ( $item->x + ( $item->width * 0.5 ) ) - $x ) ) / $area;
 
             // Really strange behaviour, we can get a negative event
             // value, so we must check this here.
