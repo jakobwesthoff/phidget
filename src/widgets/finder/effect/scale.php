@@ -29,7 +29,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         $this->scaleSize = $this->zoom - $this->size;
 
         $this->range = (
-            1- ( $this->size / $this->zoom ) * ( $this->scaleSize / ( 2 * $this->size ) )
+            1 - ( $this->size / $this->zoom ) * ( $this->scaleSize / ( 2 * $this->size ) )
         );
 
         // Position all items
@@ -122,12 +122,12 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
             if ( isset( $scalings[$i] ) )
             {
                 $item->size = round( $this->size + ( $this->scaleSize * $scalings[$i] ) );
-                $item->y    = round( $this->zoom - ( $item->size * 0.5 ) );
+                $item->y    = $this->zoom - $item->size;
             }
             else
             {
                 $item->size = $this->size;
-                $item->y    = $this->zoom - ( $this->size * 0.5 );
+                $item->y    = $this->zoom - $this->size;
             }
 
             $width += ( $item->size + $this->space );
