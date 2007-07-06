@@ -62,6 +62,9 @@ abstract item class: ::
         // Abstract function which needs to be implemented
         public abstract function getPixmap();
 
+        // Empty function which can be overridden if initialization is needed
+        public function init();
+
         // Event function which may be overridden to capture the event
         public function onMouseClick( GdkEvent $event );
     }
@@ -72,6 +75,13 @@ $x, $y, $width, $height:
 getPixmap():
     Create and return the pixmap which represents this item. The pixmap must
     always satisfy the stored size.
+
+init():
+    The init function is called by the widget system after all items,
+    animations and effects have been registered and the main widget window has
+    been initialized. This function can be used to register a update timer for
+    example. This can be an easy way to implement something like a clock
+    widget.
 
 onMouseClick():
     This function is always triggered if a click event on this perticular item
