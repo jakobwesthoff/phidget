@@ -87,7 +87,7 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         $this->window->invalidate_rect(
             new GdkRectangle(
                 $this->x - ( $this->size / 2 ),
-                $this->y - ( $this->size / 2 ),
+                $this->y,
                 $this->size,
                 $this->size
              ), false

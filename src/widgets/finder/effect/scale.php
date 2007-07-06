@@ -100,7 +100,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
                 $repaint["endOffset"] = ( $offsetX + ( $item->size * 0.5 ) );
             }
 
-            $item->x = $offsetX;
+            $item->x  = $offsetX;
             $xoffset += $item->size + $this->space;
         }
 
