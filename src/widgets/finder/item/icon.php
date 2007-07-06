@@ -28,19 +28,11 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
 
     public function draw( GdkGC $gc, GdkWindow $window )
     {
-/*
- *
-        $cmap = $window->get_colormap();
-
-  Debugging border
-        $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
-        $window->draw_rectangle( $gc, false, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ), $this->size, $this->size );
-*/
         $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );
 
         // The icon position is defined by its center point, but gdk needs the top left corner.
         // Calc the new point and draw.
-        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ) );
+        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y );
         unset( $pixbuf );
     }
 

@@ -43,11 +43,10 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         $pixbuf = $this->pixbuf->scale_simple( $this->size, $this->size, Gdk::INTERP_HYPER );
 
         // Draw current pixbuf
-        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y - round( $this->size / 2.0 ) );
+        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y );
 
         // Free resource
         unset( $pixbuf );
-/*
 
         $cmap = $window->get_colormap();
         $color = $cmap->alloc_color( "#444444" );
@@ -57,15 +56,18 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
         // Get current time values
         list( $h, $i , $s ) = explode( ":", date( "h:i:s" ) );
 
+        // Calculate pointer y center
+        $offsetY = ( $this->y + ( $this->size * 0.5 ) );
+
         // Draw hours
         list( $x, $y ) = $this->calculateXY( ( $h * 5 ) + ( $i / 12 ), ( $this->size * 0.5 ) );
-        $window->draw_line( $gc, $this->x, $this->y, $x, $y );
-        $window->draw_line( $gc, $this->x + 1, $this->y + 1, $x, $y );
+        $window->draw_line( $gc, $this->x, $offsetY, $x, $y );
+        $window->draw_line( $gc, $this->x + 1, $offsetY + 1, $x, $y );
 
         // Draw minutes
         list( $x, $y ) = $this->calculateXY( $i, ( $this->size * 0.7 ) );
-        $window->draw_line( $gc, $this->x, $this->y, $x, $y );
-        $window->draw_line( $gc, $this->x + 1, $this->y + 1, $x, $y );
+        $window->draw_line( $gc, $this->x, $offsetY, $x, $y );
+        $window->draw_line( $gc, $this->x + 1, $offsetY + 1, $x, $y );
 
         // New color for seconds
         $color = $cmap->alloc_color( "#ff0000" );
@@ -74,8 +76,8 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
 
         // Draw seconds
         list( $x, $y ) = $this->calculateXY( $s, ( $this->size * 0.8 ) );
-        $window->draw_line( $gc, $this->x, $this->y, $x, $y );
-*/
+        $window->draw_line( $gc, $this->x, $offsetY, $x, $y );
+
         // Add gtk timer
         Gtk::timeout_add( 1000, array( $this, "updateClock" ) );
     }
@@ -101,7 +103,7 @@ class jdWidgetFinderClockItem extends jdWidgetFinderItem
 
         return array(
             round( $this->x + ( ( $b * sin( deg2rad( $al ) ) ) / sin( deg2rad( $be ) ) ) ),
-            round( $this->y - ( ( $b * sin( deg2rad( $ga ) ) ) / sin( deg2rad( $be ) ) ) )
+            round( ( $this->y + ( $this->size * 0.5 ) ) - ( ( $b * sin( deg2rad( $ga ) ) ) / sin( deg2rad( $be ) ) ) )
         );
     }
 

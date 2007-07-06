@@ -102,7 +102,7 @@ abstract class jdWidget extends GtkWindow
 
         // Draw the pseudo transparency background
         $gdkwindow->draw_pixbuf( $gc, $this->bgPixbuf, $this->x + $event->area->x, $this->y + $event->area->y, $event->area->x, $event->area->y, $event->area->width, $event->area->height );
-print_r( $event->area );
+
         return $this->OnExpose( $gc, $event );
     }
 
