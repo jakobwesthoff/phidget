@@ -97,14 +97,14 @@ class jdWidgetFinder extends jdWidget
 
         // Connect to the needed signals
         $this->add_events(
-            Gdk::BUTTON_PRESS_MASK
-           |Gdk::POINTER_MOTION_MASK
-           |Gdk::LEAVE_NOTIFY_MASK
+             Gdk::BUTTON_PRESS_MASK
+           | Gdk::POINTER_MOTION_MASK
+           | Gdk::LEAVE_NOTIFY_MASK
         );
-        $this->connect( "button-press-event", array( $this, "OnMousePress" ) );
-        $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
-        $this->connect( "leave-notify-event", array( $this, "OnMouseLeave" ) );
 
+        $this->connect( "button-press-event",  array( $this, "OnMousePress" ) );
+        $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
+        $this->connect( "leave-notify-event",  array( $this, "OnMouseLeave" ) );
 
         $this->effect = new jdWidgetFinderEffectScale(
                                 $this->items,
