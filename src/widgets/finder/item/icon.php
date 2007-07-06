@@ -32,7 +32,7 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
 
         // The icon position is defined by its center point, but gdk needs the top left corner.
         // Calc the new point and draw.
-        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x - round( $this->size / 2.0 ), $this->y );
+        $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x, $this->y );
         unset( $pixbuf );
     }
 

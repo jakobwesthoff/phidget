@@ -88,16 +88,16 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         foreach ( $this->items as $i => $item )
         {
             // Calculate new item x offset
-            $offsetX = $xoffset + floor( $item->size * 0.5 );
+            $offsetX = $xoffset;//$xoffset + floor( $item->size * 0.5 );
 
             // Check for a position or size change
             if ( $offsetX !== $item->x || $this->size !== $item->size )
             {
                 if ( $repaint["startOffset"] === -1 )
                 {
-                    $repaint["startOffset"] = ( $offsetX - ( $item->size * 0.5 ) );
+                    $repaint["startOffset"] = $offsetX;//( $offsetX - ( $item->size * 0.5 ) );
                 }
-                $repaint["endOffset"] = ( $offsetX + ( $item->size * 0.5 ) );
+                $repaint["endOffset"] = $offsetX + $item->size;//( $offsetX + ( $item->size * 0.5 ) );
             }
 
             $item->x  = $offsetX;
@@ -158,13 +158,13 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
             // Check that the current item is in the sensitive area
             if ( ( ( $item->x - $area ) > $x ) || ( ( $item->x + $area ) < $x ) )
             {
-                continue;
+                //continue;
             }
 
             $scaleY = ( $y / $this->scaleSize );
             $scaleY = ( $scaleY > 1.0 ? 1.0 : $scaleY );
 
-            $scaleX = ( $area - abs( $item->x - $x ) ) / $area;
+            $scaleX = ( $area - abs( ( $item->x + ( $item->size / 2 ) ) - $x ) ) / $area;
 
             // Really strange behaviour, we can get a negative event
             // value, so we must check this here.
