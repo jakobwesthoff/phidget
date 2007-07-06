@@ -51,8 +51,15 @@ abstract class jdWidget extends GtkWindow
         // Display it on every virtual desktop
         $this->stick();
 
-        // The window should be always below all others
-        $this->set_keep_below( true );
+        // Where should we display the window, above or below al contents
+        if ( isset( $configuration["top"] ) && (string) $configuration["top"] === "true" )
+        {
+            $this->set_keep_above( true );
+        }
+        else
+        {
+            $this->set_keep_below( true );
+        }
 
         // We want to handle the draw event ourselfs
         $this->set_app_paintable( true );
