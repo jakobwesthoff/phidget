@@ -52,7 +52,7 @@ item.
 Every class which wants to represent an item needs to be derived from the
 abstract item class: ::
 
-    abstract class item {        
+    abstract class item {
         // Needed properties
         public $x;
         public $y;
@@ -60,7 +60,7 @@ abstract item class: ::
         public $height;
 
         // Abstract function which needs to be implemented
-        public abstract function getPixmap();
+        public abstract function draw( GdkGC $gc, GdkDrawable $drawable );
 
         // Empty function which can be overridden if initialization is needed
         public function init();
@@ -72,9 +72,9 @@ abstract item class: ::
 $x, $y, $width, $height:
     This variables are needed to store the coordinates and size of every item.
 
-getPixmap():
-    Create and return the pixmap which represents this item. The pixmap must
-    always satisfy the stored size.
+draw( GdkGC $gc, GdkDrawable $drawable ):
+    Draws the view which represents this item to the drawable context.
+    The rendered item view must always satisfy the stored size.
 
 init():
     The init function is called by the widget system after all items,
@@ -100,7 +100,7 @@ value during it's registration. This value defines the time in milliseconds
 between each call to the **animate** function of the animation object.
 
 Every Animation needs to implement the animation interface: ::
-    
+
     interface Animation {
         public function register();
         public function animate( AnimationDataStruct $data );
@@ -114,7 +114,7 @@ register():
 
 animate( AnimationDataStruct $data ):
     This function is called every time the animation needs to be applied. The
-    *AnimationDataStruct* may be manipulated in any way you can think of. The    
+    *AnimationDataStruct* may be manipulated in any way you can think of. The
     given struct is defined below in a greater detail. The return value of this
     function must be either true or false. It indicates whether the animation
     is completed, in which case the object is deleted and the appropriate timer
@@ -157,7 +157,7 @@ class: ::
 
     abstract class Effect {
         public abstract function onExpose( GdkGC $gc, GdkEvent $event );
-        
+
         // These methods maybe overriden if they are needed
         public function onMouseMove( GdkEvent $event );
         public function onMousePress( GdkEvent $event );
@@ -199,7 +199,7 @@ onMouseRelease( GdkEvent $event ):
     appropriate event informations are needed by the effect implementation.
 
 registerAnimation( $item, $animation ):
-    Register an arbitrary animation object for a specified item. 
+    Register an arbitrary animation object for a specified item.
     This function should not be overridden in any deriving class, therefore it
     is declared to be final.
 
@@ -217,5 +217,5 @@ getRegisteredAnimations( $item ):
    Local Variables:
    mode: rst
    fill-column: 79
-   End: 
+   End:
    vim: et syn=rst tw=79
