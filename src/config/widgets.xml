@@ -1,9 +1,11 @@
 <widgets>
 
     <widget type="elephant" x="200" y="500" />
-<!--
+
     <widget type="finder" x="300" y="500">
-        <background>pixmaps/bg.png</background>
+        <background className="jdWidgetFinderBackgroundImage">
+          <image>pixmaps/bg.png</image>
+        </background>
         <effect className="jdWidgetFinderEffectScale">
           <size>48</size>
           <zoom>192</zoom>
@@ -41,5 +43,4 @@
           </item>
         </items>
     </widget>
--->
 </widgets>

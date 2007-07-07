@@ -17,6 +17,7 @@ return array(
     'jdWidgetFinderCommand'           =>  'widgets/finder/command.php',
     'jdWidgetFinderEffect'            =>  'widgets/finder/effect.php',
     'jdWidgetFinderItem'              =>  'widgets/finder/item.php',
+    'jdWidgetFinderBackgroundImage'   =>  'widgets/finder/bg/image.php',
     'jdWidgetFinderEffectScale'       =>  'widgets/finder/effect/scale.php',
     'jdWidgetFinderEffectSizeStruct'  =>  'widgets/finder/effect/size_struct.php',
     'jdWidgetFinderClockItem'         =>  'widgets/finder/item/clock.php',

@@ -106,16 +106,16 @@ class jdWidgetFinder extends jdWidget
         $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
         $this->connect( "leave-notify-event",  array( $this, "OnMouseLeave" ) );
 
-        $this->effect = new jdWidgetFinderEffectScale(
-                                $this->items,
-                                $this->configuration->effect
-                            );
+        $this->effect = jdWidgetFinderEffect::createEffect(
+                            $this->items,
+                            $this->configuration->effect
+                        );
 
         // Instantiate the background class
-        $this->background = new jdWidgetFinderBackground(
-                                    (string) $this->configuration->background,
-                                    $this->effect->sizes
-                                );
+        $this->background = jdWidgetFinderBackground::createBackground(
+                                $this->configuration->background,
+                                $this->effect->sizes
+                            );
 
         // Get maximum size for the current effect
         $this->size = array(
@@ -149,30 +149,9 @@ class jdWidgetFinder extends jdWidget
      */
     public function OnExpose( GdkGC $gc, GdkEvent $event )
     {
-        $cmap = $event->window->get_colormap();
+        $this->background->OnExpose( $gc, $event );
 
-        // DEBUG: Draw border around the widget
-        if ( $this->debug === true )
-        {
-            $gc->set_foreground( $cmap->alloc_color( "#000000" ) );
-            $event->window->draw_rectangle( $gc, false, 0, 0, $this->size[0] - 1, $this->size[1] - 1 );
-        }
-
-        // Draw the background on the surface
-        $this->background->draw( $gc, $event );
-
-        $area = $event->area;
-
-        // Draw every icon to the widget surface
-        foreach( $this->items as $item )
-        {
-            if ( $item->x < $area->x || $item->x > ( $area->x + $area->width ) )
-            {
-                continue;
-            }
-
-            $item->draw( $gc, $event->window );
-        }
+        $this->effect->OnExpose( $gc, $event );
     }
 
     /**

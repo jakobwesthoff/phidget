@@ -18,7 +18,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
      */
     private $scaleSize = 0;
 
-    public function __construct( array $items, SimpleXMLElement $configuration )
+    protected function __construct( array $items, SimpleXMLElement $configuration )
     {
         parent::__construct( $items, $configuration );
 
@@ -34,6 +34,22 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
 
         // Position all items
         $this->process( 0, 0 );
+    }
+
+    public function OnExpose( GdkGC $gc, GdkEvent $event )
+    {
+        $area = $event->area;
+
+        // Draw every icon to the widget surface
+        foreach( $this->items as $item )
+        {
+            if ( $item->x < $area->x || $item->x > ( $area->x + $area->width ) )
+            {
+                continue;
+            }
+
+            $item->draw( $gc, $event->window );
+        }
     }
 
     public function onMouseMove( GdkEvent $event )
@@ -64,10 +80,8 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         $maxWidth = $minWidth + (int) $this->configuration->zoom;
 
         return new jdWidgetFinderEffectSizeStruct(
-                        $minWidth,
-                        (int) $this->configuration->size,
-                        $maxWidth,
-                        (int) $this->configuration->zoom
+                        $minWidth, (int) $this->configuration->size,
+                        $maxWidth, (int) $this->configuration->zoom
                     );
     }
 

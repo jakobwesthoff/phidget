@@ -9,34 +9,51 @@
  * @author Manuel Pichler <mapi@manuel-pichler.de>
  * @license GPL
  */
-class jdWidgetFinderBackground {
+abstract class jdWidgetFinderBackground
+{
+
+    /**
+     * Factory method for background finder objects.
+     *
+     * @param SimpleXMLElement $configuration The phidget config for the
+     * background.
+     * @param jdWidgetFinderEffectSizeStruct $sizes The min/max size
+     * structure for the phidget.
+     * @return jdWidgetFinderBackground The configured background object.
+     */
+    public static function createBackground( SimpleXMLElement $configuration,
+                                             jdWidgetFinderEffectSizeStruct $sizes )
+    {
+        // Get background class name
+        $className = (string) $configuration["className"];
+
+        // Create a new background
+        return new $className( $configuration, $sizes );
+    }
 
     protected $properties = array();
 
-    public function __construct( $filename, jdWidgetFinderEffectSizeStruct $sizes )
+    protected function __construct( SimpleXMLElement $configuration,
+                                    jdWidgetFinderEffectSizeStruct $sizes )
     {
         $this->properties = array(
-            "pixbuf"  =>  GdkPixbuf::new_from_file( $filename ),
-            "sizes"   =>  $sizes,
-            "scaled"  =>  round( (int) $sizes->minHeight * 0.9 ),
-            "x"       =>  round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 ),
-            "y"       =>  $sizes->maxHeight - $sizes->minHeight
+            "configuration"  =>  $configuration,
+            "pixbuf"         =>  GdkPixbuf::new_from_file( (string) $configuration->image ),
+            "sizes"          =>  $sizes,
+            "scaled"         =>  round( (int) $sizes->minHeight * 0.9 ),
+            "x"              =>  round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 ),
+            "y"              =>  $sizes->maxHeight - $sizes->minHeight
         );
     }
 
-    public function draw( GdkGC $gc, GdkEvent $event )
+    public function OnExpose( GdkGC $gc, GdkEvent $event )
     {
-
         $cmap = $event->window->get_colormap();
-
-        // Calculate x/y offsets and width/height
-        $x = ( $event->area->x < $this->x ? $this->x : $event->area->x );
-        $w = ( ( $event->area->x + $event->area->width ) < ( $this->x + $this->sizes->minWidth ) ? $event->area->width : ( $this->sizes->minWidth - $x ) );
 
         // Create a item border
         $gc->set_foreground( $cmap->alloc_color( "#cccccc" ) );
-        //$event->window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $x, $this->y, $w - 1, $this->scaled );
-        //$event->window->draw_rectangle( $gc, false, $x, $this->y, $w - 1, $this->scaled );
+        $event->window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $this->x, $this->y, $this->sizes->minWidth + 1, $this->scaled );
+        $event->window->draw_rectangle( $gc, false, $this->x, $this->y, $this->sizes->minWidth, $this->scaled );
     }
 
     /**

@@ -17,9 +17,18 @@
  */
 abstract class jdWidgetFinderEffect
 {
+
+    public static function createEffect( array $items, SimpleXMLElement $configuration )
+    {
+        // Get effect class
+        $className = (string) $configuration["className"];
+
+        return new $className( $items, $configuration );
+    }
+
     private $properties = array();
 
-    public function __construct( array $items, SimpleXMLElement $configuration )
+    protected function __construct( array $items, SimpleXMLElement $configuration )
     {
         $this->properties = array(
             "items"          =>  $items,

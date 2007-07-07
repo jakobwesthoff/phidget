@@ -148,8 +148,14 @@ abstract class jdWidgetFinderItem
      */
     public function onMouseClick( GdkEvent $event )
     {
-
     }
 
+    /**
+     * Abstract draw method for finder bar items. This method must be
+     * implemented by the different item types.
+     *
+     * @param GdkGC $gc The currently used graphical context.
+     * @param GdkWindow $window The drawable context for the item.
+     */
     public abstract function draw( GdkGC $gc, GdkWindow $window );
 }

@@ -26,13 +26,21 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
         $this->properties["pixbuf"]  = GdkPixbuf::new_from_file( (string) $configuration->icon );
     }
 
+    /**
+     * Main draw method for finder bar items.
+     *
+     * @param GdkGC $gc The currently used graphical context.
+     * @param GdkWindow $window The drawable context for the item.
+     */
     public function draw( GdkGC $gc, GdkWindow $window )
     {
+        // Create a scaled pixbuf
         $pixbuf = $this->pixbuf->scale_simple( $this->width, $this->height, Gdk::INTERP_HYPER );
 
-        // The icon position is defined by its center point, but gdk needs the top left corner.
-        // Calc the new point and draw.
+        // Draw new pixbuf to drawable context
         $window->draw_pixbuf( $gc, $pixbuf, 0, 0, $this->x, $this->y );
+
+        // Free pixbuf resource
         unset( $pixbuf );
     }
 
