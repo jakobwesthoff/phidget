@@ -60,7 +60,7 @@ abstract item class: ::
         public $height;
 
         // Abstract function which needs to be implemented
-        public abstract function draw( GdkGC $gc, GdkDrawable $drawable );
+        public abstract function draw( GdkGC $gc, GdkWindow $window );
 
         // Empty function which can be overridden if initialization is needed
         public function init();
@@ -72,7 +72,7 @@ abstract item class: ::
 $x, $y, $width, $height:
     This variables are needed to store the coordinates and size of every item.
 
-draw( GdkGC $gc, GdkDrawable $drawable ):
+draw( GdkGC $gc, GdkWindow $window ):
     Draws the view which represents this item to the drawable context.
     The rendered item view must always satisfy the stored size.
 
