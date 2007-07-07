@@ -102,7 +102,7 @@ abstract class jdWidget extends GtkWindow
         }
     }
 
-    public final function expose_event( jdWidget $window, GdkEvent $event )
+    public function expose_event( jdWidget $window, GdkEvent $event )
     {
         $gdkwindow = $event->window;
         $gc = new GdkGC( $gdkwindow );

@@ -5,6 +5,8 @@ return array(
 
     'jdWidgetExample'                 =>  'widgets/example/example.php',
 
+    'jdWidgetElephant'                =>  'widgets/elephant/elephant.php',
+
     'jdWidgetStarterbar'              =>  'widgets/starterbar/starterbar.php',
     'jdWidgetStarterbarIcon'          =>  'widgets/starterbar/icon.php',
 
