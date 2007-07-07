@@ -2,6 +2,12 @@
 /**
  * jdWidgetFinderTrashItem
  *
+ * @property-read GdkPixbuf $pixbufFull The pixbuf object for a full
+ * trash.
+ * @property-read GdkPixbuf $pixbufEmpty The pixbuf object for an empty
+ * trash.
+ * @property-read integer $refresh The trash refresh rate.
+ *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
@@ -11,7 +17,17 @@
  */
 class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
 {
+    /**
+     * The default reconfiguration timeout with two seconds
+     */
+    const DEFAULT_REFRESH = 2000;
 
+    /**
+     * The parent window that is used to draw this trash item.
+     *
+     * @type GdkWindow
+     * @var GdkWindow $window
+     */
     protected $window = null;
 
     /**
@@ -29,81 +45,82 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
         list( $filename, $extension ) = explode( ".", (string) $configuration->icon );
 
         // Set current pixbuf as empty, we know icon will set this property
-        $this->properties["pbempty"] = $this->pixbuf;
+        $this->properties["pixbufEmpty"] = $this->pixbuf;
 
         // Generate pixbuf for full trash, we use gnome naming.
-        $this->properties["pbfull"]  = GdkPixbuf::new_from_file( "{$filename}-full.{$extension}" );
+        $this->properties["pixbufFull"]  = GdkPixbuf::new_from_file( "{$filename}-full.{$extension}" );
+
+        // Check for a configured refresh rate
+        if ( isset( $configuration["refresh"] ) && (int) $configuration["refresh"] > 0 )
+        {
+            $this->properties["refresh"] = (int) $configuration["refresh"];
+        }
+        else
+        {
+            $this->properties["refresh"] = self::DEFAULT_REFRESH;
+        }
+
 
         // Check current trash state
         $this->checkTrashFiles();
+
+        // Add an initial trash check
+        Gtk::timeout_add( $this->refresh, array( $this, "checkTrash" ) );
     }
 
     /**
-     * Overloaded function to set properties
-     * (Default behaviour: Everything not explicitly allowed will be denied)
+     * Main draw method for finder bar items.
      *
-     * @param mixed $key Property to set
-     * @param mixed $val Value to set for property
-     * @return void
+     * @param GdkGC $gc The currently used graphical context.
+     * @param GdkWindow $window The drawable context for the item.
      */
-    public function __set( $key, $val )
-    {
-        switch( $key )
-        {
-            case "icon":
-            case "state":
-            case "pixbuf":
-                $this->properties[$key] = $val;
-                break;
-
-            default:
-                parent::__set( $key, $val );
-                break;
-        }
-    }
-
     public function draw( GdkGC $gc, GdkWindow $window )
     {
-        parent::draw( $gc, $window );
-
         // Keep owner window
         if ( $this->window === null )
         {
             $this->window = $window;
         }
 
-        // Add Gtk timeout for trash check
-        Gtk::timeout_add( 2000, array( $this, "checkTrash" ) );
+        parent::draw( $gc, $window );
     }
 
     /**
-     * This item recieved a left clicked.
+     * This is a callback method for the Gtk timer. It is registered in
+     * the trash ctor and it registers it self on every call. If the
+     * last cached trash state has changed and this item was drawn once
+     * it will query the parent window for a redraw.
      *
-     * @param GdkWindow $window
+     * @see checkTrashFiles()
      */
-    public function doLeftClick( GdkWindow $window )
-    {
-        // Nothing todo:
-        // TODO: Clear on double click???
-    }
-
     public function checkTrash()
     {
-         if ( $this->checkTrashFiles() )
-         {
-             print "CHANGE\n";
+        if ( $this->window !== null && $this->checkTrashFiles() )
+        {
              // Ask for redraw
             $this->window->invalidate_rect(
                 new GdkRectangle(
-                    $this->x - ( $this->size / 2 ),
-                    $this->y - ( $this->size / 2 ),
+                    $this->x,
+                    $this->y,
                     $this->size,
                     $this->size
                  ), false
             );
-         }
+        }
+
+        // Add Gtk timeout for trash check
+        Gtk::timeout_add( $this->refresh, array( $this, "checkTrash" ) );
     }
 
+    /**
+     * This method checks your local trash folder ~/.Trash and all
+     * directories listed under ~/.gnome/gnome-vfs/.trash_entry_cache
+     * for any file. If any directory contains a file it sets the item
+     * state to full otherwise it will use the empty item.
+     *
+     * @return boolean If the trash state has changed this method will
+     * return <b>true</b> otherwise the return value is <b>false</b>.
+     */
     protected function checkTrashFiles()
     {
 
@@ -179,7 +196,7 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
         }
 
         // Extract current state icon
-        $pixbuf = ( $trashFull ? $this->pbfull : $this->pbempty );
+        $pixbuf = ( $trashFull ? $this->pixbufFull : $this->pixbuffEmpty );
 
         // Check for difference
         if ( $pixbuf !== $this->pixbuf )
