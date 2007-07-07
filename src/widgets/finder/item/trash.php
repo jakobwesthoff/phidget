@@ -196,7 +196,7 @@ class jdWidgetFinderTrashItem extends jdWidgetFinderIconItem
         }
 
         // Extract current state icon
-        $pixbuf = ( $trashFull ? $this->pixbufFull : $this->pixbuffEmpty );
+        $pixbuf = ( $trashFull ? $this->pixbufFull : $this->pixbufEmpty );
 
         // Check for difference
         if ( $pixbuf !== $this->pixbuf )
