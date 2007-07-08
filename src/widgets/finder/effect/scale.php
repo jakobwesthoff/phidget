@@ -1,4 +1,14 @@
 <?php
+/**
+ * jdWidgetFinderEffectScale
+ *
+ * @version //autogen//
+ * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
+ *            All rights reserved.
+ * @author Jakob Westhoff <jakob@php.net>
+ * @author Manuel Pichler <mapi@manuel-pichler.de>
+ * @license GPL
+ */
 class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
 {
     private $size = 0;
@@ -36,7 +46,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         $this->process( 0, 0 );
     }
 
-    public function OnExpose( GdkGC $gc, GdkEvent $event )
+    public function onExpose( GdkGC $gc, GdkEvent $event )
     {
         $area = $event->area;
 
@@ -57,7 +67,23 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         return $this->process( $event->x, $event->y );
     }
 
-    public function onMouseLeave( GdkEvent $event )
+    public function onMousePress( GdkEvent $event )
+    {
+        // Find the matching item
+        foreach ( $this->items as $item )
+        {
+            // Calculate item x min/max range
+            $maxX = $item->x + $item->width;
+
+            if ( $event->x <= $maxX && $event->x >= $item->x )
+            {
+                $item->onMouseClick( $event );
+                break;
+            }
+        }
+    }
+
+    public function onMouseRelease( GdkEvent $event )
     {
         $this->process( 0, 0 );
     }
@@ -90,37 +116,39 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
         // We added a space behind the last item, which isn't really there
         $realWidth = $this->resizeItems( $eventX, $eventY );
 
-        $repaint = array(
-            "startOffset"  =>  -1,
-            "endOffset"    =>  0
-        );
+        $repaintOffsets = new stdClass();
+        $repaintOffsets->start = -1;
+        $repaintOffsets->end   = 0;
 
         // Calc new xoffset based on the new width of the bar
-        $xoffset = round( ( $this->sizes->maxWidth - $realWidth ) * 0.5 );
+        $offsetX = round( ( $this->sizes->maxWidth - $realWidth ) * 0.5 );
         // Correct the overlapping positions and center the bar correctly
         // xoffset is left border based
         foreach ( $this->items as $i => $item )
         {
-            // Calculate new item x offset
-            $offsetX = $xoffset;
-
             // Check for a position or size change
             if ( $offsetX !== $item->x || $this->size !== $item->width )
             {
-                if ( $repaint["startOffset"] === -1 )
+                if ( $repaintOffsets->start === -1 )
                 {
-                    $repaint["startOffset"] = $offsetX;
+                    $repaintOffsets->start = ( $i === 0 ? 0 : $offsetX );
                 }
-                $repaint["endOffset"] = $offsetX + $item->width;
+                $repaintOffsets->end = $offsetX + $item->width;
             }
 
             $item->x  = $offsetX;
-            $xoffset += $item->width + $this->space;
+            $offsetX += $item->width + $this->space;
+        }
+
+        // Check for right repaint border
+        if ( $repaintOffsets->end > $realWidth )
+        {
+            $repaintOffsets->end = $this->sizes->maxWidth;
         }
 
         return new GdkRectangle(
-             floor( $repaint["startOffset"] ), 0,
-             ceil( $repaint["endOffset"] - $repaint["startOffset"] ), $this->zoom
+             $repaintOffsets->start, 0,
+             $repaintOffsets->end - $repaintOffsets->start, $this->zoom
         );
     }
 
