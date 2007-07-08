@@ -102,9 +102,9 @@ class jdWidgetFinder extends jdWidget
            | Gdk::LEAVE_NOTIFY_MASK
         );
 
-        $this->connect( "button-press-event",  array( $this, "OnMousePress" ) );
-        $this->connect( "motion-notify-event", array( $this, "OnMouseMove" ) );
-        $this->connect( "leave-notify-event",  array( $this, "OnMouseLeave" ) );
+        $this->connect( "button-press-event",  array( $this, "onMousePress" ) );
+        $this->connect( "motion-notify-event", array( $this, "onMouseMove" ) );
+        $this->connect( "leave-notify-event",  array( $this, "onMouseRelease" ) );
 
         $this->effect = jdWidgetFinderEffect::createEffect(
                             $this->items,
@@ -122,6 +122,13 @@ class jdWidgetFinder extends jdWidget
             $this->effect->sizes->maxWidth,
             $this->effect->sizes->maxHeight
         );
+
+        $anim = new jdWidgetFinderAnimationPulse();
+
+        foreach ( $this->items as $item )
+        {
+            $this->effect->registerAnimation( $item, $anim );
+        }
     }
 
     /**
@@ -147,11 +154,11 @@ class jdWidgetFinder extends jdWidget
      * @param GdkGC $gc
      * @param GdkWindow $window
      */
-    public function OnExpose( GdkGC $gc, GdkEvent $event )
+    public function onExpose( GdkGC $gc, GdkEvent $event )
     {
         $this->background->OnExpose( $gc, $event );
 
-        $this->effect->OnExpose( $gc, $event );
+        $this->effect->onExpose( $gc, $event );
     }
 
     /**
@@ -161,20 +168,9 @@ class jdWidgetFinder extends jdWidget
      * @param jdWidget $source
      * @param GdkEvent $event
      */
-    public function OnMousePress( jdWidget $source, GdkEvent $event )
+    public function onMousePress( jdWidget $source, GdkEvent $event )
     {
-        // Find the matching item
-        foreach ( $this->items as $item )
-        {
-            // Calculate item x min/max range
-            $maxX = $item->x + $item->size;
-
-            if ( $event->x <= $maxX && $event->x >= $item->x )
-            {
-                $item->onMouseClick( $event );
-                break;
-            }
-        }
+        $this->effect->onMousePress( $event );
     }
 
     /**
@@ -184,7 +180,7 @@ class jdWidgetFinder extends jdWidget
      * @param jdWidget $source
      * @param GdkEvent $event
      */
-    public function OnMouseMove( jdWidget $source, GdkEvent $event )
+    public function onMouseMove( jdWidget $source, GdkEvent $event )
     {
         if ( $this->lastMouseX === $event->x
            && $this->lastMouseY === $event->y )
@@ -209,10 +205,10 @@ class jdWidgetFinder extends jdWidget
      * @param jdWidget $source
      * @param GdkEvent $event
      */
-    public function OnMouseLeave( jdWidget $source, GdkEvent $event )
+    public function onMouseRelease( jdWidget $source, GdkEvent $event )
     {
         $source->window->invalidate_rect(
-            $this->effect->onMouseLeave( $event, $this->items ), false
+            $this->effect->onMouseRelease( $event, $this->items ), false
         );
     }
 }

@@ -99,11 +99,11 @@ Animations may be registered for any item seperately. It can supply a timing
 value during it's registration. This value defines the time in milliseconds
 between each call to the **animate** function of the animation object.
 
-Every Animation needs to implement the animation interface: ::
+Every jdWidgetFinderAnimation needs to implement the animation interface: ::
 
-    interface Animation {
+    interface jdWidgetFinderAnimation {
         public function register();
-        public function animate( AnimationDataStruct $data );
+        public function animate( jdWidgetFinderAnimationDataStruct $data );
     }
 
 register():
@@ -112,22 +112,24 @@ register():
     call to **animate** should be issued. The time is represented in
     milliseconds.
 
-animate( AnimationDataStruct $data ):
-    This function is called every time the animation needs to be applied. The
-    *AnimationDataStruct* may be manipulated in any way you can think of. The
-    given struct is defined below in a greater detail. The return value of this
-    function must be either true or false. It indicates whether the animation
-    is completed, in which case the object is deleted and the appropriate timer
-    is stopped. Or if the animation needs further processing, in which case the
-    animate function will be called again after the defined delay.
+animate( jdWidgetFinderAnimationDataStruct $data ):
+    This function is called every time the animation needs to be applied.
+    The *jdWidgetFinderAnimationDataStruct* may be manipulated in any way
+    you can think of. The given struct is defined below in a greater detail.
+    The return value of this function must be either true or false. It
+    indicates whether the animation is completed, in which case the object
+    is deleted and the appropriate timer is stopped. Or if the animation needs
+    further processing, in which case the animate function will be called again
+    after the defined delay.
 
-AnimationDataStruct
+jdWidgetFinderAnimationDataStruct
 -------------------
 
-The *AnimationDataStruct* is filled and sent to any animation object which
-needs to be processed. It is defined in the following way: ::
+The *jdWidgetFinderAnimationDataStruct* is filled and sent to any
+animation object which needs to be processed. It is defined in the
+following way: ::
 
-    class AnimationDataStruct {
+    class jdWidgetFinderAnimationDataStruct {
         public $x;
         public $y;
         public $width;

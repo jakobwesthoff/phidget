@@ -75,11 +75,18 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
             // Calculate item x min/max range
             $maxX = $item->x + $item->width;
 
-            if ( $event->x <= $maxX && $event->x >= $item->x )
+            if ( $event->x > $maxX || $event->x < $item->x )
             {
-                $item->onMouseClick( $event );
-                break;
+                continue;
             }
+
+            foreach ( $this->getRegisteredAnimations( $item ) as $anim )
+            {
+                new jdWidgetFinderEffectTimer( $event->window, $anim, $item );
+            }
+
+            $item->onMouseClick( $event );
+            break;
         }
     }
 

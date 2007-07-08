@@ -51,14 +51,6 @@ class jdWidgetFinderIconItem extends jdWidgetFinderItem
      */
     public function onMouseClick( GdkEvent $event )
     {
-        print "CLICK(" . ( (string) $this->configuration->command ) . ")\n";return;
-        // Create new jump animation
-        // TODO: Make this configurable?
-        $animation = new jdWidgetFinderAnimationJump( $this, $event->window );
-
-        // Start animation
-        $animation->animate();
-
         // Build finder command
         new jdWidgetFinderCommand( (string) $this->configuration->command );
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * jdWidgetFinderBackground
+ * jdWidgetFinderBackgroundImage
  *
  * @property-read GdkPixbuf $pixbuf The used background image.
  * @property-read integer $scaled Scaled background height.
@@ -29,10 +29,10 @@ class jdWidgetFinderBackgroundImage extends jdWidgetFinderBackground
         parent::__construct( $configuration, $sizes );
 
         // Set specific properties for this background implementation
-        $this.>properties["pixbuf"] = GdkPixbuf::new_from_file( (string) $configuration->image ),
-        $this.>properties["scaled"] = round( (int) $sizes->minHeight * 0.9 ),
-        $this.>properties["x"]      = round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 ),
-        $this.>properties["y"]      = $sizes->maxHeight - $sizes->minHeight
+        $this->properties["pixbuf"] = GdkPixbuf::new_from_file( (string) $configuration->image );
+        $this->properties["scaled"] = round( (int) $sizes->minHeight * 0.9 );
+        $this->properties["x"]      = round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 );
+        $this->properties["y"]      = $sizes->maxHeight - $sizes->minHeight;
     }
 
     /**
