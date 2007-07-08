@@ -2,6 +2,11 @@
 /**
  * jdWidgetFinderBackground
  *
+ * @property-read SimpleXMLConfiguration $configuration The background
+ * settings from the phidget configuration file.
+ * @property jdWidgetFinderEffectSizeStruct $sizes The maximum and
+ * minimum width/height for the finder bar.
+ *
  * @version //autogen//
  * @copyright Copyright (C) 2007 Jakob Westhoff, Manuel Pichler.
  *            All rights reserved.
@@ -11,7 +16,6 @@
  */
 abstract class jdWidgetFinderBackground
 {
-
     /**
      * Factory method for background finder objects.
      *
@@ -31,29 +35,28 @@ abstract class jdWidgetFinderBackground
         return new $className( $configuration, $sizes );
     }
 
+    /**
+     * Magic background properties.
+     *
+     * @type array<mixed>
+     * @var array $properties
+     */
     protected $properties = array();
 
+    /**
+     * The ctor takes the background config and the effect size structure
+     * as arguments.
+     *
+     * @param SimpleXMLElement $configuration The background settings.
+     * @param jdWidgetFinderEffectSizeStruct $sizes Finder bar size struct.
+     */
     protected function __construct( SimpleXMLElement $configuration,
                                     jdWidgetFinderEffectSizeStruct $sizes )
     {
         $this->properties = array(
             "configuration"  =>  $configuration,
-            "pixbuf"         =>  GdkPixbuf::new_from_file( (string) $configuration->image ),
-            "sizes"          =>  $sizes,
-            "scaled"         =>  round( (int) $sizes->minHeight * 0.9 ),
-            "x"              =>  round( ( $sizes->maxWidth - $sizes->minWidth ) * 0.5 ),
-            "y"              =>  $sizes->maxHeight - $sizes->minHeight
+            "sizes"          =>  $sizes
         );
-    }
-
-    public function OnExpose( GdkGC $gc, GdkEvent $event )
-    {
-        $cmap = $event->window->get_colormap();
-
-        // Create a item border
-        $gc->set_foreground( $cmap->alloc_color( "#cccccc" ) );
-        $event->window->draw_pixbuf( $gc, $this->pixbuf, 0, 0, $this->x, $this->y, $this->sizes->minWidth + 1, $this->scaled );
-        $event->window->draw_rectangle( $gc, false, $this->x, $this->y, $this->sizes->minWidth, $this->scaled );
     }
 
     /**
@@ -88,8 +91,6 @@ abstract class jdWidgetFinderBackground
     {
         switch( $key )
         {
-            case 'width':
-            case 'height':
             case 'sizes':
                 $this->properties[$key] = $val;
                 break;
@@ -98,4 +99,12 @@ abstract class jdWidgetFinderBackground
                 throw new jdBasePropertyException( $key, jdBasePropertyException::WRITE );
         }
     }
+
+    /**
+     * Draws the finder background.
+     *
+     * @param GdkGC $gc The graphical context.
+     * @param GdkEvent $event Current window event.
+     */
+    public abstract function onExpose( GdkGC $gc, GdkEvent $event );
 }
