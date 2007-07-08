@@ -15,6 +15,7 @@ return array(
     'jdWidgetFinderAnimationDataStruct'  =>  'widgets/finder/anim/data_struct.php',
     'jdWidgetFinderAnimationJump'        =>  'widgets/finder/anim/jump.php',
     'jdWidgetFinderAnimationPulse'       =>  'widgets/finder/anim/pulse.php',
+    'jdWidgetFinderAnimationTimer'       =>  'widgets/finder/anim/timer.php',
     'jdWidgetFinderBackground'           =>  'widgets/finder/bg.php',
     'jdWidgetFinderCommand'              =>  'widgets/finder/command.php',
     'jdWidgetFinderEffect'               =>  'widgets/finder/effect.php',

@@ -82,7 +82,7 @@ class jdWidgetFinderEffectScale extends jdWidgetFinderEffect
 
             foreach ( $this->getRegisteredAnimations( $item ) as $anim )
             {
-                new jdWidgetFinderEffectTimer( $event->window, $anim, $item );
+                new jdWidgetFinderAnimationTimer( $event->window, $anim, $item );
             }
 
             $item->onMouseClick( $event );
