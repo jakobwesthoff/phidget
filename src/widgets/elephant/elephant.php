@@ -129,7 +129,7 @@ class jdWidgetElephant extends jdWidget
             // left collision
             $this->direction =  0;            
             $collision = true;
-            echo "LEFT COLLISION \n";
+//            echo "LEFT COLLISION \n";
         }
 
         if ( $this->y <= 40 )
@@ -137,7 +137,7 @@ class jdWidgetElephant extends jdWidget
             // top collision
             $this->up = false;
             $collision = true;
-            echo "TOP COLLISION \n";
+//            echo "TOP COLLISION \n";
         }
 
         if ( $this->y >= $this->get_screen()->get_height() - $dimension[1] - 40 ) 
@@ -145,7 +145,7 @@ class jdWidgetElephant extends jdWidget
             // bottom collision
             $this->up = true;
             $collision = true;
-            echo "BOTTOM COLLISION \n";
+//            echo "BOTTOM COLLISION \n";
         }
 
         if ( $this->x >= $this->get_screen()->get_width() - $dimension[0] ) 
@@ -153,7 +153,7 @@ class jdWidgetElephant extends jdWidget
             // right collision
             $this->direction = 1;
             $collision = true;
-            echo "RIGHT COLLISION \n";
+//            echo "RIGHT COLLISION \n";
         }
 
         if ( $collision === true ) 
