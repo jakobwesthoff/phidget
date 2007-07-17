@@ -58,22 +58,11 @@ class jdWidgetElephant extends jdWidget
                        : ( $this->animationFrame + 1 );
     }
 
-    private function changeDirection() 
+    private function runAway() 
     {
-        if ( $this->direction  === 1 ) 
-        {
-            $this->direction = 0;
-            $this->up = !$this->up;
-            $this->newMovement( 4 );
-        }
-        else 
-        {            
-            $this->direction = 1;
-            $this->up = !$this->up;
-            $this->newMovement( 16 );
-        }
-
-        $this->animationFrame = 0;                                           
+            $this->direction = mt_rand( 0, 1 );
+            $this->up = ( bool )mt_rand( 0, 1 );
+            $this->newMovement( 20 );
     }
 
     public function expose_event( jdWidget $window, GdkEvent $event )
@@ -92,7 +81,7 @@ class jdWidgetElephant extends jdWidget
 
     public function OnMousePress( jdWidget $source, GdkEvent $event )
     {
-        $this->changeDirection();
+        $this->runAway();
     }
 
     public function initTimer() 
