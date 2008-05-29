@@ -1,7 +1,8 @@
 <widgets>
 
-    <widget type="elephant" x="200" y="500" />
 <!--
+    <widget type="elephant" x="200" y="500" />
+-->
     <widget type="finder" x="300" y="500">
         <background className="jdWidgetFinderBackgroundImage">
           <image>pixmaps/bg.png</image>
@@ -43,5 +44,4 @@
           </item>
         </items>
     </widget>
--->
 </widgets>

@@ -80,6 +80,7 @@ abstract class jdWidget extends GtkWindow
 
         // Load the background and scale it to the desktop size
         $screen = Gdk::get_default_root_window()->get_screen();
+        
         $this->bgPixbuf = GdkPixbuf::new_from_file_at_size( $this->bgFilename, $screen->get_width(), $screen->get_height() );
 
         // Show the window
@@ -108,7 +109,16 @@ abstract class jdWidget extends GtkWindow
         $gc = new GdkGC( $gdkwindow );
 
         // Draw the pseudo transparency background
-        $gdkwindow->draw_pixbuf( $gc, $this->bgPixbuf, $this->x + $event->area->x, $this->y + $event->area->y, $event->area->x, $event->area->y, $event->area->width, $event->area->height );
+        $gdkwindow->draw_pixbuf( 
+            $gc,
+            $this->bgPixbuf,
+            $this->x + $event->area->x,
+            $this->y + $event->area->y,
+            $event->area->x,
+            $event->area->y,
+            $event->area->width,
+            $event->area->height
+        );
 
         return $this->OnExpose( $gc, $event );
     }
