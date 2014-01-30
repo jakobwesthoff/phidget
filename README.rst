@@ -26,7 +26,7 @@ representing your programs using a nice looking on mouse over zoom effect. It
 is most likely that you have seen this kind of bar in other widget systems
 too. 
 
-.. image:: phidgets_starterbar.jpg
+.. image:: https://raw.github.com/jakobwesthoff/phidget/master/img/phidgets_starterbar.jpg
    :alt: Screenshot of the starterbar widget
    :align: center
 
@@ -38,7 +38,7 @@ This widget was inspired by the `easter egg`__ in gnome which makes a `litle
 fish`__ swim across your desktop. Because this a PHP_ based desktop widget
 what would better represent it than a walking php elephant.
 
-.. image:: phidgets_elephant.jpg
+.. image:: https://raw.github.com/jakobwesthoff/phidget/master/img/phidgets_elephant.jpg
    :alt: Screenshot of the elephants in action
    :align: center
 
